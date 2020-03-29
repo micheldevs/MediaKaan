@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html lang="es">
+{% load static %}
    <head>
       <meta http-equiv="content-type" content="text/html; charset=UTF-8">
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <meta name="description" content="">
       <meta name="author" content="">
-      <link rel="icon" href="./img/logo/mediak-logo.ico">
+      <link rel="icon" href="{% static "gestionUsuarios/img/logo/mediak-logo.ico" %}">
       <title>MediaKaanª | Iniciar sesión</title>
-      <link href="./css/bootstrap.css" rel="stylesheet">
-      <link href="./css/signin.css" rel="stylesheet">
+      <link href="{% static "gestionUsuarios/css/bootstrap.css" %}" rel="stylesheet">
+      <link href="{% static "gestionUsuarios/css/signin.css" %}" rel="stylesheet">
    </head>
    <body class="text-center">
       <div class="card">
          <div class="card-header">
             <h1 class="h3 mb-3 font-weight-normal">Inicie sesión</h1>
-            <img class="mb-4" src="./img/logo/mediak-logo.png" alt="" width="72" height="72">
+            <img class="mb-4" src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" alt="" width="72" height="72">
          </div>
          <div class="card-body">
-            <form class="form-signin">
+            <form class="form-signin" method="post" action="{% url 'gestionUsuarios:user_login' %}">
+               {% csrf_token %}
                <label for="inputEmail" class="sr-only">Dirección email</label>
-               <input type="email" id="inputEmail" class="form-control" placeholder="Dirección email" required autofocus>
+               <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Dirección email" required autofocus>
                <label for="inputPassword" class="sr-only">Contraseña</label>
-               <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required>
+               <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Contraseña" required>
                <div class="checkbox mb-3">
                   <label>
                   <input type="checkbox" value="remember-me"> Recuérdame
@@ -34,7 +36,7 @@
          </div>
          <div class="card-footer">
             <div class="d-flex justify-content-center links">
-               <p>¿No dispone de usuario? <a href="#"> Regístrate aquí</a></p>
+               <p>¿No dispone de usuario? <a href="{% url 'gestionUsuarios:register' %}"> Regístrate aquí</a></p>
             </div>
             <div class="d-flex justify-content-center">
                <a href="#">Olvidé mi contraseña</a>

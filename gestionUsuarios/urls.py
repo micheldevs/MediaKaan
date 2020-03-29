@@ -1,4 +1,9 @@
-from django.urls import path
+from django.conf.urls import url
 from . import views
 
-urlpatterns = []
+app_name = 'gestionUsuarios'
+
+urlpatterns = [
+    url(r'^registro/$', views.register, name='register'),
+    url(r'^iniciosesion/$', views.user_login, name='user_login'),
+]

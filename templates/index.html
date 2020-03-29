@@ -1,0 +1,11 @@
+{% extends "gestionUsuarios/base.html" %}
+{% block body_block %}
+<div class="jumbotron">
+    <h1>¡Bienvenido a MediaKaanª!</h1>
+    {% if user.is_authenticated %}
+    <h2>Saludos {{ user.username }}.</h2>
+    {% else %}
+    <h2>Puede utilizar la página en modo invitado o bien iniciar sesión.</h2>
+    {% endif %}
+</div>
+{% endblock %}

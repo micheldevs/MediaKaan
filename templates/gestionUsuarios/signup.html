@@ -1,26 +1,29 @@
-
-
 <!DOCTYPE html>
 <html lang="es">
+{% load static %}
    <head>
       <meta http-equiv="content-type" content="text/html; charset=UTF-8">
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <meta name="description" content="">
       <meta name="author" content="">
-      <link rel="icon" href="./img/logo/mediak-logo.ico">
+      <link rel="icon" href="{% static "gestionUsuarios/img/logo/mediak-logo.ico" %}">
       <title>MediaKaanª | Registrarse</title>
-      <link href="./css/bootstrap.css" rel="stylesheet">
-      <link href="./css/signin.css" rel="stylesheet">
+      <link href="{% static "gestionUsuarios/css/bootstrap.css" %}" rel="stylesheet">
+      <link href="{% static "gestionUsuarios/css/signin.css" %}" rel="stylesheet">
    </head>
    <body class="">
       <div class="card">
          <div class="card-header text-center">
             <h1 class="h3 mb-3 font-weight-normal">Regístrese</h1>
-            <img class="mb-4" src="./img/logo/mediak-logo.png" alt="" width="72" height="72">
+            <img class="mb-4" src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" alt="" width="72" height="72">
          </div>
          <div class="card-body">
+          {% if registered %}
+            <h1>¡Te has registrado con éxito!</h1>
+          {% else %}
             <form class="form-signup">
+            {% csrf_token %}
                <div class="form-row">
                   <div class="col-md-4 mb-3">
                      <label for="inputUsername">Nombre de usuario <strong style="color: red;">*</strong></label>
@@ -58,6 +61,7 @@
                </div>
                <button class="btn btn-lg btn-success btn-block" type="submit">Registrarse</button>
             </form>
+          {% endif %}
          </div>
          <div class="card-footer">
             <div class="d-flex justify-content-center links">
