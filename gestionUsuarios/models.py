@@ -25,4 +25,4 @@ class UsuarioInfo(models.Model):
     fechaNacimiento=models.DateField(default=timezone.now, verbose_name='Fecha de nacimiento')
 
     def __str__(self):
-        return "Usuario: %s con email %s y fecha de creacion %s" % (self.user.username, self.user.email, self.user.date_joined)
+        return "Usuario: %s con email %s y fecha de creacion %s" % (self.usuario.username, self.usuario.email, self.usuario.date_joined)

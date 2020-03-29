@@ -21,8 +21,12 @@
          <div class="card-body">
           {% if registered %}
             <h1>¡Te has registrado con éxito!</h1>
+            <div class="alert alert-success" role="alert">
+               <h4 class="alert-heading">¡Te has registrado con éxito!</h4>
+               <p>Ahora puede iniciar sesión <a href="{% url 'gestionUsuarios:user_login' %}">aquí.</a></p>
+             </div>
           {% else %}
-            <form class="form-signup">
+            <form class="form-signup" enctype="multipart/form-data" method="POST">
             {% csrf_token %}
                <div class="form-row">
                   <div class="col-md-4 mb-3">
@@ -31,31 +35,31 @@
                         <div class="input-group-prepend">
                            <span class="input-group-text" id="inputGroupPrepend3">@</span>
                         </div>
-                        <input type="text" class="form-control" id="inputUsername" placeholder="Nombre de usuario"
+                        <input type="text" class="form-control" id="inputUsername" name="{{ usuario_form.username.name }}" placeholder="Nombre de usuario"
                            aria-describedby="inputGroupPrepend3" required="" autofocus="">
                      </div>
                   </div>
                   <div class="col-md-4 mb-3">
                      <label for="inputEmail">Dirección email <strong style="color: red;">*</strong></label>
-                     <input type="email" id="inputEmail" class="form-control" placeholder="Dirección email"
+                     <input type="email" id="inputEmail" name="{{ usuario_form.email.name }}" class="form-control" placeholder="Dirección email"
                         required="">
                   </div>
                   <div class="col-md-4 mb-3">
                      <label for="inputPassword">Contraseña <strong style="color: red;">*</strong></label>
-                     <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña"
+                     <input type="password" id="inputPassword" name="{{ usuario_form.password.name }}" class="form-control" placeholder="Contraseña"
                         required="">
                   </div>
                </div>
                <div class="form-row">
                   <div class="col-md-6 mb-3">
                      <label for="inputBirthday">Fecha de nacimiento <strong style="color: red;">*</strong></label>
-                     <input class="form-control" type="date" id="inputBirthday" required>
+                     <input class="form-control" type="date" id="inputBirthday" name="{{ infous_form.fechaNacimiento.name }}" required>
                   </div>
                   <div class="col-md-6 mb-3">
                      <label for=inputFile>Seleccione su avatar <strong style="color: red;">*</strong></label>
                      <div class="custom-file">
                         <label class="custom-file-label" for="inputFile">Seleccione su foto de usuario...</label>
-                        <input type="file" class="custom-file-input" id="inputFile" required>
+                        <input type="file" class="custom-file-input" id="inputFile" name="{{ infous_form.avatar.name }}" required>
                      </div>
                   </div>
                </div>
@@ -65,7 +69,7 @@
          </div>
          <div class="card-footer">
             <div class="d-flex justify-content-center links">
-               <p>¿Ya tiene usuario? <a href="#"> Inicie sesión aquí</a></p>
+               <p>¿Ya tiene usuario? <a href="{% url 'gestionUsuarios:user_login' %}"> Inicie sesión aquí</a></p>
             </div>
             <p class="mt-5 mb-3 text-muted text-center">MediaKaanª 2019-2020</p>
          </div>

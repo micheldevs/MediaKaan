@@ -3,14 +3,21 @@ from django.contrib import admin
 from gestionUsuarios.models import UsuarioInfo
 
 # Register your models here.
-# Permite gestionar los modelos de datos que podrá manipular el administrador de la aplicación.
+# Permite gestionar los datos que podrá manipular el administrador de la aplicación.
 
-"""
-class UsuarioAdmin(admin.ModelAdmin):
-    list_display=("nick", "email", "fechaCreacion")
-    search_fields=("nick", "email", "fechaCreacion")
-    readonly_fields = ('fechaCreacion',)
-    list_filter=("fechaCreacion",)
-"""
 
-admin.site.register(UsuarioInfo)
+class UsuarioInfoAdmin(admin.ModelAdmin):
+
+    def username(self, UsuarioInfo):
+        if UsuarioInfo:
+            return UsuarioInfo.usuario.username
+
+    def email(self, UsuarioInfo):
+        if UsuarioInfo:
+            return UsuarioInfo.usuario.email
+
+    list_display = ("username", "email", "fechaNacimiento")
+    search_fields = ("username", "email", "fechaNacimiento")
+    list_filter = ("fechaNacimiento",)
+
+admin.site.register(UsuarioInfo, UsuarioInfoAdmin)

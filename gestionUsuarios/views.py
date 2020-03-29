@@ -61,17 +61,20 @@ def register(request):
                            
 def user_login(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
+        username = request.POST.get('username')
         password = request.POST.get('password')
-        user = authenticate(email=email, password=password)
+
+        user = authenticate(username=username, password=password)
 
         if user:
             if user.is_active:
                 login(request, user)
                 return HttpResponseRedirect(reverse('index'))
             else:
-                return HttpResponse("Tu cuenta está inactiva. Consulte al administrador.")
+                warning = "Tu cuenta está inactiva. Por favor consulte al administrador."
+                return render(request, 'gestionUsuarios/signin.html', {'warning': warning})
         else:
-            return HttpResponse("El email o la contraseña empleados son incorrectos.")
+            error = "El nombre de usuario o la contraseña son incorrectas."
+            return render(request, 'gestionUsuarios/signin.html', {'error': error})
     else:
         return render(request, 'gestionUsuarios/signin.html', {})

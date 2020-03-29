@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-{% load static %}
+{% load staticfiles %}
    <head>
       <meta http-equiv="content-type" content="text/html; charset=UTF-8">
       <meta charset="utf-8">
@@ -21,8 +21,8 @@
          <div class="card-body">
             <form class="form-signin" method="post" action="{% url 'gestionUsuarios:user_login' %}">
                {% csrf_token %}
-               <label for="inputEmail" class="sr-only">Dirección email</label>
-               <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Dirección email" required autofocus>
+               <label for="inputUsuario" class="sr-only">Nombre de usuario</label>
+               <input type="text" id="inputUsuario" name="username" class="form-control" placeholder="Nombre de usuario" required autofocus>
                <label for="inputPassword" class="sr-only">Contraseña</label>
                <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Contraseña" required>
                <div class="checkbox mb-3">
@@ -33,6 +33,16 @@
                <hr>
                <button class="btn btn-lg btn-success btn-block" type="submit">Iniciar sesión</button>
             </form>
+            {% if warning %}
+            <div class="alert alert-danger" role="alert">
+               <strong>¡Vaya! </strong> {{error}}
+            </div>
+            {% endif %}
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+               <strong>¡Vaya! </strong> {{error}}
+            </div>
+            {% endif %}
          </div>
          <div class="card-footer">
             <div class="d-flex justify-content-center links">
