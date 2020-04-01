@@ -9,8 +9,10 @@
       <meta name="author" content="">
       <link rel="icon" href="{% static "gestionUsuarios/img/logo/mediak-logo.ico" %}">
       <title>MediaKaanª | Registrarse</title>
+      {% block css %}
       <link href="{% static "gestionUsuarios/css/bootstrap.css" %}" rel="stylesheet">
       <link href="{% static "gestionUsuarios/css/signin.css" %}" rel="stylesheet">
+      {% endblock %}
    </head>
    <body class="">
       <div class="card">
@@ -26,41 +28,55 @@
                <p>Ahora puede iniciar sesión <a href="{% url 'gestionUsuarios:user_login' %}">aquí.</a></p>
              </div>
           {% else %}
-            <form class="form-signup" enctype="multipart/form-data" method="POST">
+            <form class="form-signup" enctype="multipart/form-data" method="post" action="{% url 'gestionUsuarios:register' %}">
             {% csrf_token %}
                <div class="form-row">
-                  <div class="col-md-4 mb-3">
+                  <div class="col-md-6 mb-3">
                      <label for="inputUsername">Nombre de usuario <strong style="color: red;">*</strong></label>
                      <div class="input-group">
                         <div class="input-group-prepend">
                            <span class="input-group-text" id="inputGroupPrepend3">@</span>
                         </div>
-                        <input type="text" class="form-control" id="inputUsername" name="{{ usuario_form.username.name }}" placeholder="Nombre de usuario"
+                        <input type="text" class="form-control" id="inputUsername" name="username" placeholder="Nombre de usuario"
                            aria-describedby="inputGroupPrepend3" required="" autofocus="">
                      </div>
                   </div>
-                  <div class="col-md-4 mb-3">
+                  <div class="col-md-6 mb-3">
                      <label for="inputEmail">Dirección email <strong style="color: red;">*</strong></label>
-                     <input type="email" id="inputEmail" name="{{ usuario_form.email.name }}" class="form-control" placeholder="Dirección email"
+                     <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Dirección email"
                         required="">
                   </div>
-                  <div class="col-md-4 mb-3">
+               </div>
+               <div class="form-row">
+                  <div class="col-md-6 mb-3">
                      <label for="inputPassword">Contraseña <strong style="color: red;">*</strong></label>
-                     <input type="password" id="inputPassword" name="{{ usuario_form.password.name }}" class="form-control" placeholder="Contraseña"
+                     <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Contraseña"
+                        required="">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                     <label for="inputPasswordRep">Repita su contraseña <strong style="color: red;">*</strong></label>
+                     <input type="password" id="inputPasswordRep" name="passwordRep" class="form-control" placeholder="Repita su contraseña"
                         required="">
                   </div>
                </div>
                <div class="form-row">
                   <div class="col-md-6 mb-3">
                      <label for="inputBirthday">Fecha de nacimiento <strong style="color: red;">*</strong></label>
-                     <input class="form-control" type="date" id="inputBirthday" name="{{ infous_form.fechaNacimiento.name }}" required>
+                     <input class="form-control" type="date" id="inputBirthday" name="fechaNacimiento" required>
                   </div>
                   <div class="col-md-6 mb-3">
                      <label for=inputFile>Seleccione su avatar <strong style="color: red;">*</strong></label>
                      <div class="custom-file">
                         <label class="custom-file-label" for="inputFile">Seleccione su foto de usuario...</label>
-                        <input type="file" class="custom-file-input" id="inputFile" name="{{ infous_form.avatar.name }}" required>
+                        <input type="file" class="custom-file-input" id="inputFile" name="avatar" required>
                      </div>
+                  </div>
+               </div>
+               <div class="form-row">
+                  <div class="col-md-12 mb-3">
+                     <label for="inputBio">Escriba su biografía de perfil <strong style="color: red;">*</strong></label>
+                     <textarea class="form-control" id="inputBio" rows="3" maxlength="150" placeholder="Escriba su biografía de perfil (150 letras máximo; 100 letras mínimo)" required></textarea>
+                     <div class="word-counter">0/150</div>
                   </div>
                </div>
                <button class="btn btn-lg btn-success btn-block" type="submit">Registrarse</button>
@@ -74,6 +90,18 @@
             <p class="mt-5 mb-3 text-muted text-center">MediaKaanª 2019-2020</p>
          </div>
       </div>
+      {% block javascript %}
+      <script type="text/javascript" src="{% static "gestionUsuarios/js/jquery-3.4.1.min.js" %}"></script>
+      {% endblock %}
+      {% block extra_js %}
+      <script>
+         $(document).ready(function () {
+            $('#inputBio').keyup(function () {
+               $('.word-counter').text($.trim(this.value.length) + '/150');
+            })
+         });
+      </script>
+      {% endblock %}
    </body>
 </html>
 

@@ -20,8 +20,9 @@ from gestionUsuarios import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^$', views.index,name='index'),
-    url(r'^special/', views.special,name='special'),
+    url(r'^$', views.index, name='index'),
+    url(r'^about/$', views.about, name='about'),
+    url(r'^special/', views.special, name='special'),
     url(r'^gestionUsuarios/', include('gestionUsuarios.urls')),
     url(r'^logout/$', views.user_logout, name='logout'),
 ]

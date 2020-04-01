@@ -1,0 +1,81 @@
+{% extends "gestionUsuarios/base.html" %}
+{% block title %} MediaKaanª | Acerca de {% endblock %}
+{% load static %}
+{% block body_block %}
+<div class="row featurette">
+    <div class="col-md-7">
+        <h2 class="featurette-heading">¿Qué es MediaKaanª?</h2>
+        <p class="lead">
+            MediaKaanª es una aplicación web sin ánimo de lucro de <strong>comparto, dono e intercambio</strong> de
+            material multimedia en físico entre usuarios.
+            Dicho material multimedia puede englobar películas, comics, libros, música e incluso videojuegos.
+        </p>
+    </div>
+    <div class="col-md-5">
+        <img class="featurette-image img-fluid mx-auto" style="width: 250px; height: 250px;"
+            src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" data-holder-rendered="true">
+    </div>
+</div>
+<hr class="featurette-divider">
+<div class="row featurette">
+    <div class="col-md-7 order-md-2">
+        <h2 class="featurette-heading">¿Cómo funciona?</h2>
+        <p class="lead">
+            Un usuario de la página puede tanto registrarse como iniciar sesión en la aplicación y tras esto, puede
+            decidir entre registrar un artículo de su propiedad
+            para intercambiarlo, donarlo o compartirlo con alguien o bien realizar una búsqueda de un artículo que le
+            interese para contactar con el propietario. Los interesados
+            en dar y recibir el artículo se ponen de acuerdo por medio de un chat y si ambas partes están de acuerdo el
+            propietario asocia el artículo al interesado y quedan
+            en un punto en común para proceder al dono, intercambio o comparto.
+        </p>
+    </div>
+    <div class="col-md-5 order-md-1">
+        <img class="featurette-image img-fluid mx-auto" style="width: 250px; height: 250px;"
+            src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" data-holder-rendered="true">
+    </div>
+</div>
+<hr class="featurette-divider">
+<div class="row featurette">
+    <div class="col-md-7">
+        <h2 class="featurette-heading">Motivación de la aplicación</h2>
+        <p class="lead">
+            La motivación detrás de MediaKaanª es crear un espacio para preservar entre unos y otros aquellos artículos
+            multimedia en físico que hoy en día
+            tienen poco lugar a causa de la fama que han adquirido los productos en digital al cabo de los años, además
+            de su reutilización. <br>
+            La aplicación nace para crear una alternativa para aquellos artículos que no pueden encontrarse en digital,
+            para aquella gente que
+            no tiene claro que hacer con algo que le crea espacio y otra que necesita o bien quiere algo que le
+            interesa. <br> Con esta aplicación se pretende
+            motivar la difusión de la cultura o la educación de una manera más cercana y libre, más cerca de aquellos
+            puestos de tomar y dar que de un mercadillo
+            de segunda mano, con la que además si hay suerte haga que la gente con intereses comunes se conozcan y
+            decidan quedar para tomar algo.
+        </p>
+    </div>
+    <div class="col-md-5">
+        <img class="featurette-image img-fluid mx-auto" style="width: 250px; height: 250px;"
+            src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" data-holder-rendered="true">
+    </div>
+</div>
+<hr class="featurette-divider">
+<div class="pb-4 text-center">
+    <h2>Desarrolladores</h2>
+</div>
+<div class="row justify-content-center">
+    <div class="col-lg-4">
+        <div class="text-center">
+            <img class="rounded-circle" src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" width="140"
+                height="140">
+            <h3>Desarrollador de la aplicación</h3>
+            <h4>Miguel Ángel Blanco Fernández</h4>
+            <p>
+                Soy un estudiante del grado de ingeniería informática en la especialidad de Ingeniería Del Software y
+                esta aplicación
+                forma parte de mi trabajo de fin de grado.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

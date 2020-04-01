@@ -8,9 +8,11 @@
       <meta name="description" content="">
       <meta name="author" content="">
       <link rel="icon" href="{% static "gestionUsuarios/img/logo/mediak-logo.ico" %}">
-      <title>MediaKaanª</title>
+      <title>{% block title %} {% endblock %}</title>
+      {% block css %}
       <link href="{% static "gestionUsuarios/css/bootstrap.css" %}" rel="stylesheet">
       <link href="{% static "gestionUsuarios/css/sticky-footer-navbar.css" %}" rel="stylesheet">
+      {% endblock %}
    </head>
    <body>
       <header>
@@ -42,7 +44,7 @@
                      <a class="nav-link" href="#">Chats</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link" href="#">Acerca de</a>
+                     <a class="nav-link" href="{% url 'about' %}">Acerca de</a>
                   </li>
                </ul>
             </div>
@@ -72,9 +74,11 @@
       <!-- Bootstrap core JavaScript
          ================================================== -->
       <!-- Placed at the end of the document so the pages load faster -->
-      <script src="{% static "gestionUsuarios/js/jquery-3.js" %}" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-      <script src="{% static "gestionUsuarios/js/popper.js" %}"></script>
-      <script src="{% static "gestionUsuarios/js/bootstrap.js" %}"></script>
+      {% block javascript %}
+      <script type="text/javascript" src="{% static "gestionUsuarios/js/jquery-3.4.1.min.js" %}"></script>
+      <script type="text/javascript" src="{% static "gestionUsuarios/js/popper.js" %}"></script>
+      <script type="text/javascript" src="{% static "gestionUsuarios/js/bootstrap.js" %}"></script>
+      {% endblock %}
    </body>
 </html>
 

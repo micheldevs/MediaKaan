@@ -13,6 +13,12 @@ def index(request):
     Creará una respuesta al usuario mostrando la página índice de la aplicación.
     """
     return render(request,'index.html')
+
+def about(request):
+    """
+    Creará una respuesta al usuario mostrando la página de información de la aplicación.
+    """
+    return render(request,'about.html')
     
 @login_required
 def special(request):
