@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 {% load static %}
+{% load widget_tweaks %}
    <head>
       <meta http-equiv="content-type" content="text/html; charset=UTF-8">
       <meta charset="utf-8">
@@ -28,54 +29,74 @@
                <p>Ahora puede iniciar sesión <a href="{% url 'gestionUsuarios:user_login' %}">aquí.</a></p>
              </div>
           {% else %}
-            <form class="form-signup" enctype="multipart/form-data" method="post" action="{% url 'gestionUsuarios:register' %}">
+            <form class="form-signup" enctype="multipart/form-data" method="post">
             {% csrf_token %}
                <div class="form-row">
                   <div class="col-md-6 mb-3">
-                     <label for="inputUsername">Nombre de usuario <strong style="color: red;">*</strong></label>
+                     <label for="id_username">Nombre de usuario <strong style="color: red;">*</strong></label>
                      <div class="input-group">
                         <div class="input-group-prepend">
-                           <span class="input-group-text" id="inputGroupPrepend3">@</span>
+                           <span class="input-group-text" id="inputGroupPrepend">@</span>
                         </div>
-                        <input type="text" class="form-control" id="inputUsername" name="username" placeholder="Nombre de usuario"
-                           aria-describedby="inputGroupPrepend3" required="" autofocus="">
+                        {% if usuario_form.username.errors %}
+                           {% render_field usuario_form.username class="form-control is-invalid" placeholder="Nombre de usuario" aria-describedby="inputGroupPrepend" required="" autofocus=""  %}
+                        {% else %}
+                           {% render_field usuario_form.username class="form-control" placeholder="Nombre de usuario" aria-describedby="inputGroupPrepend" required="" autofocus=""  %}
+                        {% endif %}
                      </div>
+                     <small class="form-text text-muted" id="helpUser">
+                        {{ usuario_form.username.help_text }}
+                     </small>
+                     {% if usuario_form.username.errors %}
+                     <small class="form-text text-muted" id="errorUser">
+                     {% for error in usuario_form.username.errors %}
+                        <p class="text-danger">{{ error }}</p>
+                     {% endfor %}                     
+                     </small>
+                     {% endif %}
                   </div>
                   <div class="col-md-6 mb-3">
-                     <label for="inputEmail">Dirección email <strong style="color: red;">*</strong></label>
-                     <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Dirección email"
+                     <label for="id_email">Dirección email <strong style="color: red;">*</strong></label>
+                     {% render_field usuario_form.email class="form-control" placeholder="Dirección email" required="" %}
+                  </div>
+               </div>
+               <div class="form-row">
+                  <div class="col-md-6 mb-3">
+                     <label for="id_password">Contraseña <strong style="color: red;">*</strong></label>
+                     {% if usuario_form.password.errors %}
+                        {% render_field usuario_form.password class="form-control is-invalid" placeholder="Contraseña" required="" %}
+                        <small class="form-text text-muted" id="errorPassword">
+                           {% for error in usuario_form.password.errors %}
+                              <p class="text-danger">{{ error }}</p>
+                           {% endfor %}                     
+                        </small>
+                     {% else %}
+                        {% render_field usuario_form.password class="form-control" placeholder="Contraseña" required="" %}
+                     {% endif %}
+                  </div>
+                  <div class="col-md-6 mb-3">
+                     <label for="id_passwordRep">Repita su contraseña <strong style="color: red;">*</strong></label>
+                     <input type="password" id="id_passwordRep" name="passwordRep" class="form-control" placeholder="Repita su contraseña"
                         required="">
                   </div>
                </div>
                <div class="form-row">
                   <div class="col-md-6 mb-3">
-                     <label for="inputPassword">Contraseña <strong style="color: red;">*</strong></label>
-                     <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Contraseña"
-                        required="">
+                     <label for="id_fechaNacimiento">Fecha de nacimiento <strong style="color: red;">*</strong></label>
+                     {% render_field infous_form.fechaNacimiento type="date" class="form-control" required="" %}
                   </div>
                   <div class="col-md-6 mb-3">
-                     <label for="inputPasswordRep">Repita su contraseña <strong style="color: red;">*</strong></label>
-                     <input type="password" id="inputPasswordRep" name="passwordRep" class="form-control" placeholder="Repita su contraseña"
-                        required="">
-                  </div>
-               </div>
-               <div class="form-row">
-                  <div class="col-md-6 mb-3">
-                     <label for="inputBirthday">Fecha de nacimiento <strong style="color: red;">*</strong></label>
-                     <input class="form-control" type="date" id="inputBirthday" name="fechaNacimiento" required>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                     <label for=inputFile>Seleccione su avatar <strong style="color: red;">*</strong></label>
+                     <label for=id_avatar>Seleccione su avatar <strong style="color: red;">*</strong></label>
                      <div class="custom-file">
-                        <label class="custom-file-label" for="inputFile">Seleccione su foto de usuario...</label>
-                        <input type="file" class="custom-file-input" id="inputFile" name="avatar" required>
+                        <label class="custom-file-label" for="id_avatar">Seleccione su foto de usuario...</label>
+                        {% render_field infous_form.avatar class="custom-file-input" required="" %}
                      </div>
                   </div>
                </div>
                <div class="form-row">
                   <div class="col-md-12 mb-3">
-                     <label for="inputBio">Escriba su biografía de perfil <strong style="color: red;">*</strong></label>
-                     <textarea class="form-control" id="inputBio" rows="3" maxlength="150" placeholder="Escriba su biografía de perfil (150 letras máximo; 100 letras mínimo)" required></textarea>
+                     <label for="id_bio">Escriba su biografía de perfil <strong style="color: red;">*</strong></label>
+                     {% render_field infous_form.bio class="form-control" rows="3" maxlength="150" placeholder="Escriba su biografía de perfil (150 letras máximo; 100 letras mínimo)" required="" %}
                      <div class="word-counter">0/150</div>
                   </div>
                </div>
@@ -96,7 +117,7 @@
       {% block extra_js %}
       <script>
          $(document).ready(function () {
-            $('#inputBio').keyup(function () {
+            $('#id_bio').keyup(function () {
                $('.word-counter').text($.trim(this.value.length) + '/150');
             })
          });

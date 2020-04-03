@@ -11,6 +11,7 @@ class UsuarioForm(forms.ModelForm):
         fields = ('username','email','password')
 
 class UsuarioInfoForm(forms.ModelForm):
-     class Meta():
+    bio = forms.CharField(widget=forms.Textarea())
+    class Meta():
          model = UsuarioInfo
          fields = ('avatar', 'bio', 'fechaNacimiento')
