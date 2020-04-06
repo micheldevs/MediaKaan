@@ -8,16 +8,8 @@ from gestionUsuarios.models import UsuarioInfo, User
 
 class UsuarioInfoAdmin(admin.ModelAdmin):
 
-    def username(self, UsuarioInfo):
-        if UsuarioInfo:
-            return UsuarioInfo.usuario.username
-
-    def email(self, UsuarioInfo):
-        if UsuarioInfo:
-            return UsuarioInfo.usuario.email
-
-    list_display = ("username", "email", "fechaNacimiento")
-    search_fields = ("username", "email", "fechaNacimiento")
+    list_display = ("usuario", "fechaNacimiento")
+    search_fields = ("usuario", "fechaNacimiento")
     list_filter = ("fechaNacimiento",)
 
 admin.site.register(UsuarioInfo, UsuarioInfoAdmin)

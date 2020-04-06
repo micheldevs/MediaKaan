@@ -1,5 +1,5 @@
 from django import forms
-from gestionUsuarios.models import UsuarioInfo
+from gestionUsuarios.models import UsuarioInfo, User
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator, MinLengthValidator, MaxLengthValidator, FileExtensionValidator
 from django.core.files.images import get_image_dimensions

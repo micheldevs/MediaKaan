@@ -49,7 +49,7 @@ def register(request):
             usuario.set_password(usuario.password)
             usuario.save()
             infous = infous_form.save(commit=False)
-            infous.user = usuario
+            infous.set_usuario(usuario.get_username())
             infous.avatar = request.FILES['avatar']
             infous.save()
             registered = True

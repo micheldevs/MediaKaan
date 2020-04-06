@@ -1,5 +1,4 @@
 from django.db import models
-from djongo import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
@@ -19,14 +18,11 @@ class UsuarioInfo(models.Model):
         - Su fecha de nacimiento
     """
 
-    usuario=models.EmbeddedField(
-        model_container=User,
-        null=False)
+    usuario=models.CharField(max_length=150, unique=True, null=True)
     avatar=models.ImageField(upload_to='avatars')
     bio=models.CharField(max_length=150)
     valoracion=models.IntegerField(default=0)
     fechaNacimiento=models.DateField(default=timezone.now, verbose_name='Fecha de nacimiento')
 
     def __str__(self):
-        return "Usuario: %s con email %s y fecha de creacion %s" % (self.usuario.username, self.usuario.email, self.usuario.date_joined)
-    
+        return "Usuario: %s" % (self.usuario)
