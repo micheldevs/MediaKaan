@@ -43,15 +43,14 @@ def register(request):
     registered = False
     if request.method == 'POST':
         usuario_form = UsuarioForm(data=request.POST)
-        infous_form = UsuarioInfoForm(data=request.POST)
+        infous_form = UsuarioInfoForm(data=request.POST, files=request.FILES)
         if usuario_form.is_valid() and infous_form.is_valid():
             usuario = usuario_form.save()
             usuario.set_password(usuario.password)
             usuario.save()
             infous = infous_form.save(commit=False)
             infous.user = usuario
-            if 'avatar' in request.FILES:
-                infous.avatar = request.FILES['avatar']
+            infous.avatar = request.FILES['avatar']
             infous.save()
             registered = True
         else:

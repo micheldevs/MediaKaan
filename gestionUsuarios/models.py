@@ -19,10 +19,11 @@ class UsuarioInfo(models.Model):
     """
 
     usuario=models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar=models.ImageField(upload_to='avatars', blank=True)
+    avatar=models.ImageField(upload_to='avatars')
     bio=models.CharField(max_length=150)
-    valoracion=models.IntegerField(default=0, blank=True)
+    valoracion=models.IntegerField(default=0)
     fechaNacimiento=models.DateField(default=timezone.now, verbose_name='Fecha de nacimiento')
 
     def __str__(self):
         return "Usuario: %s con email %s y fecha de creacion %s" % (self.usuario.username, self.usuario.email, self.usuario.date_joined)
+    

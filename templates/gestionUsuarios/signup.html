@@ -25,7 +25,7 @@
           {% if registered %}
             <h1>¡Te has registrado con éxito!</h1>
             <div class="alert alert-success" role="alert">
-               <h4 class="alert-heading">¡Te has registrado con éxito!</h4>
+               <h4 class="alert-heading" style="padding-bottom: 20;">¡Te has registrado con éxito!</h4>
                <p>Ahora puede iniciar sesión <a href="{% url 'gestionUsuarios:user_login' %}">aquí.</a></p>
              </div>
           {% else %}
@@ -82,8 +82,16 @@
                   </div>
                   <div class="col-md-6 mb-3">
                      <label for="id_passwordRep">Repita su contraseña <strong style="color: red;">*</strong></label>
-                     <input type="password" id="id_passwordRep" name="passwordRep" class="form-control" placeholder="Repita su contraseña"
-                        required="">
+                     {% if usuario_form.passwordRep.errors %}
+                        {% render_field usuario_form.passwordRep class="form-control is-invalid" placeholder="Repita su contraseña" required="" %}
+                        <small class="form-text text-muted" id="errorPasswordRep">
+                           {% for error in usuario_form.passwordRep.errors %}
+                              <p class="text-danger">{{ error }}</p>
+                           {% endfor %}                     
+                        </small>
+                     {% else %}
+                        {% render_field usuario_form.passwordRep class="form-control" placeholder="Repita su contraseña" required="" %}
+                     {% endif %}
                   </div>
                </div>
                <div class="form-row">
@@ -111,7 +119,7 @@
                      <div class="custom-file">
                         <label class="custom-file-label" for="id_avatar">Seleccione su foto de usuario...</label>
                         {% if infous_form.avatar.errors %}
-                           {% render_field infous_form.avatar class="form-control custom-file-input is-invalid" required="" %}
+                           {% render_field infous_form.avatar class="custom-file-input is-invalid" required="" %}
                         <small class="form-text text-muted" id="helpAvatar">
                            {{ infous_form.avatar.help_text }}
                         </small>
@@ -121,7 +129,7 @@
                            {% endfor %}                     
                         </small>
                         {% else %}
-                           {% render_field infous_form.avatar class="form-control custom-file-input" required="" %}
+                           {% render_field infous_form.avatar class="custom-file-input" required="" %}
                            <small class="form-text text-muted" id="helpAvatar">
                               {{ infous_form.avatar.help_text }}
                            </small>
@@ -134,6 +142,7 @@
                      <label for="id_bio">Escriba su biografía de perfil <strong style="color: red;">*</strong></label>
                      {% if infous_form.bio.errors %}
                         {% render_field infous_form.bio class="form-control is-invalid" rows="3" maxlength="150" placeholder="Escriba su biografía de perfil (150 letras máximo; 100 letras mínimo)" required="" %}
+                        <div class="word-counter">0/150</div>
                         <small class="form-text text-muted" id="errorBio">
                            {% for error in infous_form.bio.errors %}
                               <p class="text-danger">{{ error }}</p>
