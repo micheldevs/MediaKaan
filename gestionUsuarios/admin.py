@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from gestionUsuarios.models import UsuarioInfo
+from gestionUsuarios.models import UsuarioInfo, User
 
 # Register your models here.
 # Permite gestionar los datos que podrá manipular el administrador de la aplicación.

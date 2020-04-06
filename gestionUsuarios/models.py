@@ -1,4 +1,5 @@
 from django.db import models
+from djongo import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
@@ -18,7 +19,9 @@ class UsuarioInfo(models.Model):
         - Su fecha de nacimiento
     """
 
-    usuario=models.OneToOneField(User, on_delete=models.CASCADE)
+    usuario=models.EmbeddedField(
+        model_container=User,
+        null=False)
     avatar=models.ImageField(upload_to='avatars')
     bio=models.CharField(max_length=150)
     valoracion=models.IntegerField(default=0)
