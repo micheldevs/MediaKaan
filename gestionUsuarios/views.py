@@ -65,6 +65,10 @@ def register(request):
                            'registered':registered})
                            
 def user_login(request):
+    """
+    Iniciará la sesión del usuario.
+    """
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
