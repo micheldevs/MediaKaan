@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 
 class UsuarioInfo(models.Model):
     """
-        Modelo de datos para la información de los usuarios.
+        Modelo de datos para la información adicional de los usuarios.
 
         Se compone de:
         - Un modelo User (con username, email, password, fecha de unión, etc...)
@@ -18,11 +18,11 @@ class UsuarioInfo(models.Model):
         - Su fecha de nacimiento
     """
 
-    usuario=models.CharField(max_length=150, unique=True, null=True)
+    usuario=models.OneToOneField(User, on_delete=models.CASCADE)
     avatar=models.ImageField(upload_to='avatars')
     bio=models.CharField(max_length=150)
     valoracion=models.IntegerField(default=0)
     fechaNacimiento=models.DateField(default=timezone.now, verbose_name='Fecha de nacimiento')
 
     def __str__(self):
-        return "Usuario: %s" % (self.usuario)
+        return "Usuario: %s con email %s y fecha de creacion %s" % (self.usuario.username, self.usuario.email, self.usuario.date_joined)

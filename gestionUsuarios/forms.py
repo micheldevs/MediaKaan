@@ -6,13 +6,19 @@ from django.core.files.images import get_image_dimensions
 from django.core.exceptions import ValidationError
 from datetime import datetime
 
-# Creará formularios desde los modelos
+# Creará formularios desde los modelos y hace las validaciones pertinentes
 
 class UsuarioForm(forms.ModelForm):
+    """
+    Formulario del usuario.
+    """
+
+    # Texto de ayuda para los campos del formulario
     def __init__(self, *args, **kwargs):
         super(UsuarioForm, self).__init__(*args, **kwargs)
         self.fields['password'].help_text = 'La contraseña debe tener al menos una letra o número y una longitud como mínimo con 8 caracteres.'
 
+    # Campo de la contraseña con validador de su expresión regular y mensaje de error
     password = forms.CharField(
         widget=forms.PasswordInput(),
         validators=[
@@ -20,8 +26,9 @@ class UsuarioForm(forms.ModelForm):
                 regex='^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
                 message='La contraseña debe tener mínimo 8 caracteres y al menos una letra o número.')])
     
-    passwordRep = forms.CharField(widget=forms.PasswordInput())
+    passwordRep = forms.CharField(widget=forms.PasswordInput()) # Campo para repetir la contraseña
 
+    # Validador de la repetición de contraseña con mensaje de error
     def clean_passwordRep(self):
         password = self.cleaned_data.get('password', False)
         passwordRep = self.cleaned_data.get('passwordRep', False)
@@ -35,11 +42,17 @@ class UsuarioForm(forms.ModelForm):
         fields = ('username','email','password')
 
 class UsuarioInfoForm(forms.ModelForm):
+    """
+    Formulario de la información adicional del usuario.
+    """
+    
+    # Texto de ayuda para los campos del formulario
     def __init__(self, *args, **kwargs):
         super(UsuarioInfoForm, self).__init__(*args, **kwargs)
         self.fields['avatar'].help_text = 'El avatar debe ser una imagen con dimensiones 500x500.'
         self.fields['fechaNacimiento'].help_text = 'El usuario debe tener 18 años para poder utilizar la aplicación.'
 
+    # Campo de biografía con validadores de longitud entre 100 y 150 caracteres con mensajes de error
     bio = forms.CharField(widget=forms.Textarea(),
         validators=[
             MinLengthValidator(
@@ -48,6 +61,8 @@ class UsuarioInfoForm(forms.ModelForm):
             MaxLengthValidator(
                 150,
                 message='La biografía del usuario debe tener como máximo 150 caracteres.')])
+
+    # Campo del avatar del usuario con validador de extensión del archivo y mensaje de error
     avatar = forms.ImageField(widget=forms.FileInput(),
         validators=[
             FileExtensionValidator(
@@ -55,8 +70,10 @@ class UsuarioInfoForm(forms.ModelForm):
                 message='El avatar debe tener una extensión válida de imagen (JPG, JPEG, PNG, GIF).')
             ])
 
+    # Campo de fecha de nacimiento
     fechaNacimiento = forms.DateField(widget=forms.DateInput())
 
+    # Validador adicional del campo avatar, valida las dimensiones de la imagen que sube el usuario
     def clean_avatar(self):
             avatar = self.cleaned_data.get('avatar', False)
             width, height = get_image_dimensions(avatar)
@@ -67,6 +84,7 @@ class UsuarioInfoForm(forms.ModelForm):
             else:
                 raise ValidationError("No se ha encontrado cargada ninguna imagen.")
     
+    # Validador de fecha de nacimiento, donde el usuario debe tener 18 años
     def clean_fechaNacimiento(self):
         fechaNacimiento = self.cleaned_data.get('fechaNacimiento', False)
         edad = datetime.now().date() - fechaNacimiento
