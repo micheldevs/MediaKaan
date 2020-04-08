@@ -26,3 +26,19 @@ class UsuarioInfo(models.Model):
 
     def __str__(self):
         return "Usuario: %s con email %s y fecha de creacion %s" % (self.usuario.username, self.usuario.email, self.usuario.date_joined)
+    
+class UsuarioUbicacion(models.Model):
+    """
+    Modelo de datos para la ubicación del usuario.
+
+    Se compone de:
+    - La latitud de la ubicación del usuario
+    - La longitud de la ubicación del usuario
+    """
+
+    usuario=models.OneToOneField(User, on_delete=models.CASCADE)
+    latUb=models.FloatField(verbose_name='Latitud de la ubicación')
+    lngUb=models.FloatField(verbose_name='Longitud de la ubicación')
+
+    def __str__(self):
+        return "Usuario: %s con ubicación con latitud %s y longitud %s" % (self.usuario.username, self.latUb, self.lngUb)

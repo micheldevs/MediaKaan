@@ -1,5 +1,5 @@
 from django import forms
-from gestionUsuarios.models import UsuarioInfo, User
+from gestionUsuarios.models import UsuarioInfo, UsuarioUbicacion, User
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator, MinLengthValidator, MaxLengthValidator, FileExtensionValidator
 from django.core.files.images import get_image_dimensions
@@ -95,3 +95,27 @@ class UsuarioInfoForm(forms.ModelForm):
     class Meta():
          model = UsuarioInfo
          fields = ('avatar', 'bio', 'fechaNacimiento')
+
+class UsuarioUbicacionForm(forms.ModelForm):
+    """
+    Formulario de la ubicación del usuario.
+    """
+
+    latUb=forms.FloatField(widget=forms.HiddenInput())
+    lngUb=forms.FloatField(widget=forms.HiddenInput())
+
+    # Validador de latitud y longitud no vacia y válida
+    def clean(self):
+        latUb = self.cleaned_data.get('latUb', False)
+        lngUb = self.cleaned_data.get('lngUb', False)
+
+        if latUb and lngUb:
+            # La latitud debe estar entre -90 y 90 y la longitud entre -180 y 180
+            if (latUb >= -90.0 and latUb <= 90.0) and (lngUb >= -180.0 and lngUb <= 180.0):
+                return self.cleaned_data
+            else:
+                raise forms.ValidationError("Ubicación no válida.")
+
+    class Meta():
+         model = UsuarioUbicacion
+         fields = ('latUb', 'lngUb')

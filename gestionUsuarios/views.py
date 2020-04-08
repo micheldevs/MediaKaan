@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from gestionUsuarios.forms import UsuarioForm, UsuarioInfoForm
+from gestionUsuarios.forms import UsuarioForm, UsuarioInfoForm, UsuarioUbicacionForm
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
@@ -44,7 +44,9 @@ def register(request):
     if request.method == 'POST':
         usuario_form = UsuarioForm(data=request.POST)
         infous_form = UsuarioInfoForm(data=request.POST, files=request.FILES)
-        if usuario_form.is_valid() and infous_form.is_valid():
+        ubus_form = UsuarioUbicacionForm(data=request.POST)
+
+        if usuario_form.is_valid() and infous_form.is_valid() and ubus_form.is_valid():
             usuario = usuario_form.save()
             usuario.set_password(usuario.password)
             usuario.save()
@@ -52,16 +54,21 @@ def register(request):
             infous.usuario = usuario
             infous.avatar = request.FILES['avatar']
             infous.save()
+            ubus = ubus_form.save(commit=False)
+            ubus.usuario = usuario
+            ubus.save()
             registered = True
         else:
-            print(usuario_form.errors, infous_form.errors)
+            print(usuario_form.errors, infous_form.errors, ubus_form.errors)
     else:
         usuario_form = UsuarioForm()
         infous_form = UsuarioInfoForm()
+        ubus_form = UsuarioUbicacionForm(data=request.POST)
     
     return render(request,'gestionUsuarios/signup.html',
                           {'usuario_form':usuario_form,
                            'infous_form':infous_form,
+                           'ubus_form':ubus_form,
                            'registered':registered})
                            
 def user_login(request):

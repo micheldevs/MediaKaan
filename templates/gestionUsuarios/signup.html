@@ -2,182 +2,198 @@
 <html lang="es">
 {% load static %}
 {% load widget_tweaks %}
-   <head>
-      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <meta name="description" content="">
-      <meta name="author" content="">
-      <link rel="icon" href="{% static "gestionUsuarios/img/logo/mediak-logo.ico" %}">
-      <title>MediaKaanª | Registrarse</title>
-      {% block css %}
-      <link href="{% static "gestionUsuarios/css/bootstrap.css" %}" rel="stylesheet">
-      <link href="{% static "gestionUsuarios/css/signin.css" %}" rel="stylesheet">
-      {% endblock %}
-   </head>
-   <body class="">
-      <div class="card">
-         <div class="card-header text-center">
-            <h1 class="h3 mb-3 font-weight-normal">Regístrese</h1>
-            <img class="mb-4" src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" alt="" width="72" height="72">
-         </div>
-         <div class="card-body">
-          {% if registered %}
-            <h1>¡Te has registrado con éxito!</h1>
-            <div class="alert alert-success" role="alert">
-               <h4 class="alert-heading" style="padding-bottom: 20;">¡Te has registrado con éxito!</h4>
-               <p>Ahora puede iniciar sesión <a href="{% url 'gestionUsuarios:user_login' %}">aquí.</a></p>
-             </div>
-          {% else %}
-            <form class="form-signup" enctype="multipart/form-data" method="post">
-            {% csrf_token %}
-               <div class="form-row">
-                  <div class="col-md-6 mb-3">
-                     <label for="id_username">Nombre de usuario <strong style="color: red;">*</strong></label>
-                     <div class="input-group">
-                        <div class="input-group-prepend">
-                           <span class="input-group-text" id="inputGroupPrepend">@</span>
-                        </div>
-                        {% if usuario_form.username.errors %}
-                           {% render_field usuario_form.username class="form-control is-invalid" placeholder="Nombre de usuario" aria-describedby="inputGroupPrepend" required="" autofocus=""  %}
-                        {% else %}
-                           {% render_field usuario_form.username class="form-control" placeholder="Nombre de usuario" aria-describedby="inputGroupPrepend" required="" autofocus=""  %}
-                        {% endif %}
-                     </div>
-                     <small class="form-text text-muted" id="helpUser">
-                        {{ usuario_form.username.help_text }}
-                     </small>
-                     {% if usuario_form.username.errors %}
-                     <small class="form-text text-muted" id="errorUser">
-                     {% for error in usuario_form.username.errors %}
-                        <p class="text-danger">{{ error }}</p>
-                     {% endfor %}                     
-                     </small>
-                     {% endif %}
-                  </div>
-                  <div class="col-md-6 mb-3">
-                     <label for="id_email">Dirección email <strong style="color: red;">*</strong></label>
-                     {% render_field usuario_form.email class="form-control" placeholder="Dirección email" required="" %}
-                  </div>
-               </div>
-               <div class="form-row">
-                  <div class="col-md-6 mb-3">
-                     <label for="id_password">Contraseña <strong style="color: red;">*</strong></label>
-                     {% if usuario_form.password.errors %}
-                        {% render_field usuario_form.password class="form-control is-invalid" placeholder="Contraseña" required="" %}
-                        <small class="form-text text-muted" id="helpPassword">
-                           {{ usuario_form.password.help_text }}
-                        </small>
-                        <small class="form-text text-muted" id="errorPassword">
-                           {% for error in usuario_form.password.errors %}
-                              <p class="text-danger">{{ error }}</p>
-                           {% endfor %}                     
-                        </small>
-                     {% else %}
-                        {% render_field usuario_form.password class="form-control" placeholder="Contraseña" required="" %}
-                        <small class="form-text text-muted" id="helpPassword">
-                           {{ usuario_form.password.help_text }}
-                        </small>
-                     {% endif %}
-                  </div>
-                  <div class="col-md-6 mb-3">
-                     <label for="id_passwordRep">Repita su contraseña <strong style="color: red;">*</strong></label>
-                     {% if usuario_form.passwordRep.errors %}
-                        {% render_field usuario_form.passwordRep class="form-control is-invalid" placeholder="Repita su contraseña" required="" %}
-                        <small class="form-text text-muted" id="errorPasswordRep">
-                           {% for error in usuario_form.passwordRep.errors %}
-                              <p class="text-danger">{{ error }}</p>
-                           {% endfor %}                     
-                        </small>
-                     {% else %}
-                        {% render_field usuario_form.passwordRep class="form-control" placeholder="Repita su contraseña" required="" %}
-                     {% endif %}
-                  </div>
-               </div>
-               <div class="form-row">
-                  <div class="col-md-6 mb-3">
-                     <label for="id_fechaNacimiento">Fecha de nacimiento <strong style="color: red;">*</strong></label>
-                     {% if infous_form.fechaNacimiento.errors %}
-                        {% render_field infous_form.fechaNacimiento type="date" class="form-control  is-invalid" required="" %}
-                        <small class="form-text text-muted" id="helpfechaNacimiento">
-                           {{ infous_form.fechaNacimiento.help_text }}
-                        </small>
-                        <small class="form-text text-muted" id="errorfechaNacimiento">
-                           {% for error in infous_form.fechaNacimiento.errors %}
-                              <p class="text-danger">{{ error }}</p>
-                           {% endfor %}                     
-                        </small>
-                     {% else %}
-                        {% render_field infous_form.fechaNacimiento type="date" class="form-control" required="" %}
-                        <small class="form-text text-muted" id="helpfechaNacimiento">
-                           {{ infous_form.fechaNacimiento.help_text }}
-                        </small>
-                     {% endif %}
-                  </div>
-                  <div class="col-md-6 mb-3">
-                     <label for=id_avatar>Seleccione su avatar <strong style="color: red;">*</strong></label>
-                     <div class="custom-file">
-                        <label class="custom-file-label" for="id_avatar">Seleccione su foto de usuario...</label>
-                        {% if infous_form.avatar.errors %}
-                           {% render_field infous_form.avatar class="custom-file-input is-invalid" required="" %}
-                        <small class="form-text text-muted" id="helpAvatar">
-                           {{ infous_form.avatar.help_text }}
-                        </small>
-                        <small class="form-text text-muted" id="errorAvatar">
-                           {% for error in infous_form.avatar.errors %}
-                              <p class="text-danger">{{ error }}</p>
-                           {% endfor %}                     
-                        </small>
-                        {% else %}
-                           {% render_field infous_form.avatar class="custom-file-input" required="" %}
-                           <small class="form-text text-muted" id="helpAvatar">
-                              {{ infous_form.avatar.help_text }}
-                           </small>
-                        {% endif %}
-                     </div>
-                  </div>
-               </div>
-               <div class="form-row">
-                  <div class="col-md-12 mb-3">
-                     <label for="id_bio">Escriba su biografía de perfil <strong style="color: red;">*</strong></label>
-                     {% if infous_form.bio.errors %}
-                        {% render_field infous_form.bio class="form-control is-invalid" rows="3" maxlength="150" placeholder="Escriba su biografía de perfil (150 letras máximo; 100 letras mínimo)" required="" %}
-                        <div class="word-counter">0/150</div>
-                        <small class="form-text text-muted" id="errorBio">
-                           {% for error in infous_form.bio.errors %}
-                              <p class="text-danger">{{ error }}</p>
-                           {% endfor %}                     
-                        </small>
-                     {% else %}
-                        {% render_field infous_form.bio class="form-control" rows="3" maxlength="150" placeholder="Escriba su biografía de perfil (150 letras máximo; 100 letras mínimo)" required="" %}
-                        <div class="word-counter">0/150</div>
-                     {% endif %}
-                  </div>
-               </div>
-               <button class="btn btn-lg btn-success btn-block" type="submit">Registrarse</button>
-            </form>
-          {% endif %}
-         </div>
-         <div class="card-footer">
-            <div class="d-flex justify-content-center links">
-               <p>¿Ya tiene usuario? <a href="{% url 'gestionUsuarios:user_login' %}"> Inicie sesión aquí</a></p>
-            </div>
-            <p class="mt-5 mb-3 text-muted text-center">MediaKaanª 2019-2020</p>
-         </div>
-      </div>
-      {% block javascript %}
-      <script type="text/javascript" src="{% static "gestionUsuarios/js/jquery-3.4.1.min.js" %}"></script>
-      {% endblock %}
-      {% block extra_js %}
-      <script>
-         // Contador de letras de la biografia
-         $(document).ready(function () {
-            $('#id_bio').keyup(function () {
-               $('.word-counter').text($.trim(this.value.length) + '/150');
-            })
-         });
-      </script>
-      {% endblock %}
-   </body>
-</html>
 
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, height=device-heigth, initial-scale=1, shrink-to-fit=no">
+   <meta name="description" content="">
+   <meta name="author" content="">
+   <link rel="icon" href="{% static "gestionUsuarios/img/logo/mediak-logo.ico" %}">
+   <title>MediaKaanª | Registrarse</title>
+   {% block css %}
+   <link href="{% static "gestionUsuarios/css/bootstrap.css" %}" rel="stylesheet">
+   <link href="{% static "gestionUsuarios/css/signin.css" %}" rel="stylesheet">
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+      integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+      crossorigin="" />
+   {% endblock %}
+</head>
+
+<body>
+   <div class="card">
+      <div class="card-header text-center">
+         <h1 class="h3 mb-3 font-weight-normal">Regístrese</h1>
+         <img class="mb-4" src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" alt="" width="72" height="72">
+      </div>
+      <div class="card-body scroll">
+         {% if registered %}
+         <h1>¡Te has registrado con éxito!</h1>
+         <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading" style="padding-bottom: 20;">¡Te has registrado con éxito!</h4>
+            <p>Ahora puede iniciar sesión <a href="{% url 'gestionUsuarios:user_login' %}">aquí.</a></p>
+         </div>
+         {% else %}
+         <form class="form-signup" enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+            <div class="form-row">
+               <div class="col-md-6 mb-3">
+                  <label for="id_username">Nombre de usuario <strong style="color: red;">*</strong></label>
+                  <div class="input-group">
+                     <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupPrepend">@</span>
+                     </div>
+                     {% if usuario_form.username.errors %}
+                     {% render_field usuario_form.username class="form-control is-invalid" placeholder="Nombre de usuario" aria-describedby="inputGroupPrepend" required="" autofocus=""  %}
+                     {% else %}
+                     {% render_field usuario_form.username class="form-control" placeholder="Nombre de usuario" aria-describedby="inputGroupPrepend" required="" autofocus=""  %}
+                     {% endif %}
+                  </div>
+                  <small class="form-text text-muted" id="helpUser">
+                     {{ usuario_form.username.help_text }}
+                  </small>
+                  {% if usuario_form.username.errors %}
+                  <small class="form-text text-muted" id="errorUser">
+                     {% for error in usuario_form.username.errors %}
+                     <p class="text-danger">{{ error }}</p>
+                     {% endfor %}
+                  </small>
+                  {% endif %}
+               </div>
+               <div class="col-md-6 mb-3">
+                  <label for="id_email">Dirección email <strong style="color: red;">*</strong></label>
+                  {% render_field usuario_form.email class="form-control" placeholder="Dirección email" required="" %}
+               </div>
+            </div>
+            <div class="form-row">
+               <div class="col-md-6 mb-3">
+                  <label for="id_password">Contraseña <strong style="color: red;">*</strong></label>
+                  {% if usuario_form.password.errors %}
+                  {% render_field usuario_form.password class="form-control is-invalid" placeholder="Contraseña" required="" %}
+                  <small class="form-text text-muted" id="helpPassword">
+                     {{ usuario_form.password.help_text }}
+                  </small>
+                  <small class="form-text text-muted" id="errorPassword">
+                     {% for error in usuario_form.password.errors %}
+                     <p class="text-danger">{{ error }}</p>
+                     {% endfor %}
+                  </small>
+                  {% else %}
+                  {% render_field usuario_form.password class="form-control" placeholder="Contraseña" required="" %}
+                  <small class="form-text text-muted" id="helpPassword">
+                     {{ usuario_form.password.help_text }}
+                  </small>
+                  {% endif %}
+               </div>
+               <div class="col-md-6 mb-3">
+                  <label for="id_passwordRep">Repita su contraseña <strong style="color: red;">*</strong></label>
+                  {% if usuario_form.passwordRep.errors %}
+                  {% render_field usuario_form.passwordRep class="form-control is-invalid" placeholder="Repita su contraseña" required="" %}
+                  <small class="form-text text-muted" id="errorPasswordRep">
+                     {% for error in usuario_form.passwordRep.errors %}
+                     <p class="text-danger">{{ error }}</p>
+                     {% endfor %}
+                  </small>
+                  {% else %}
+                  {% render_field usuario_form.passwordRep class="form-control" placeholder="Repita su contraseña" required="" %}
+                  {% endif %}
+               </div>
+            </div>
+            <div class="form-row">
+               <div class="col-md-6 mb-3">
+                  <label for="id_fechaNacimiento">Fecha de nacimiento <strong style="color: red;">*</strong></label>
+                  {% if infous_form.fechaNacimiento.errors %}
+                  {% render_field infous_form.fechaNacimiento type="date" class="form-control  is-invalid" required="" %}
+                  <small class="form-text text-muted" id="helpfechaNacimiento">
+                     {{ infous_form.fechaNacimiento.help_text }}
+                  </small>
+                  <small class="form-text text-muted" id="errorfechaNacimiento">
+                     {% for error in infous_form.fechaNacimiento.errors %}
+                     <p class="text-danger">{{ error }}</p>
+                     {% endfor %}
+                  </small>
+                  {% else %}
+                  {% render_field infous_form.fechaNacimiento type="date" class="form-control" required="" %}
+                  <small class="form-text text-muted" id="helpfechaNacimiento">
+                     {{ infous_form.fechaNacimiento.help_text }}
+                  </small>
+                  {% endif %}
+               </div>
+               <div class="col-md-6 mb-3">
+                  <label for=id_avatar>Seleccione su avatar <strong style="color: red;">*</strong></label>
+                  <div class="custom-file">
+                     <label class="custom-file-label" for="id_avatar">Seleccione su foto de usuario...</label>
+                     {% if infous_form.avatar.errors %}
+                     {% render_field infous_form.avatar class="custom-file-input is-invalid" required="" %}
+                     <small class="form-text text-muted" id="helpAvatar">
+                        {{ infous_form.avatar.help_text }}
+                     </small>
+                     <small class="form-text text-muted" id="errorAvatar">
+                        {% for error in infous_form.avatar.errors %}
+                        <p class="text-danger">{{ error }}</p>
+                        {% endfor %}
+                     </small>
+                     {% else %}
+                     {% render_field infous_form.avatar class="custom-file-input" required="" %}
+                     <small class="form-text text-muted" id="helpAvatar">
+                        {{ infous_form.avatar.help_text }}
+                     </small>
+                     {% endif %}
+                  </div>
+               </div>
+            </div>
+            <div class="form-row">
+               <div class="col-md-12 mb-3">
+                  <label for="id_bio">Escriba su biografía de perfil <strong style="color: red;">*</strong></label>
+                  {% if infous_form.bio.errors %}
+                  {% render_field infous_form.bio class="form-control is-invalid" rows="3" maxlength="150" placeholder="Escriba su biografía de perfil (150 letras máximo; 100 letras mínimo)" required="" %}
+                  <div class="word-counter">0/150</div>
+                  <small class="form-text text-muted" id="errorBio">
+                     {% for error in infous_form.bio.errors %}
+                     <p class="text-danger">{{ error }}</p>
+                     {% endfor %}
+                  </small>
+                  {% else %}
+                  {% render_field infous_form.bio class="form-control" rows="3" maxlength="150" placeholder="Escriba su biografía de perfil (150 letras máximo; 100 letras mínimo)" required="" %}
+                  <div class="word-counter">0/150</div>
+                  {% endif %}
+               </div>
+            </div>
+            <div class="form-row">
+               {% render_field ubus_form.latUb value="" %}
+               {% render_field ubus_form.lngUb value="" %}
+               {% include "gestionUsuarios/registerubication.html" %}
+               {% if ubus_form.errors %}
+               <small class="form-text text-muted" id="errorUb">
+                  {% for error in ubus_form.latUb.errors %}
+                  <p class="text-danger">{{ error }}</p>
+                  {% endfor %}
+               </small>
+               {% endif %}
+            </div>
+            <div class="form-row" style="padding-bottom: 20px;">
+               <button class="btn btn-lg btn-success btn-block" type="submit">Registrarse</button>
+            </div>
+         </form>
+         {% endif %}
+      </div>
+      <div class="card-footer">
+         <div class="d-flex justify-content-center links">
+            <p>¿Ya tiene usuario? <a href="{% url 'gestionUsuarios:user_login' %}"> Inicie sesión aquí</a></p>
+         </div>
+         <p class="mt-5 mb-3 text-muted text-center">MediaKaanª 2019-2020</p>
+      </div>
+   </div>
+   {% block javascript %}
+   <script type="text/javascript" src="{% static "gestionUsuarios/js/jquery-3.4.1.min.js" %}"></script>
+   <script type="text/javascript" src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+      integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+      crossorigin=""></script>
+   {% endblock %}
+   {% block extra_js %}
+   <script type="text/javascript" src="{% static "gestionUsuarios/js/signupcounter.js" %}"></script>
+   <script type="text/javascript" src="{% static "gestionUsuarios/js/registerubication.js" %}"></script>
+   {% endblock %}
+</body>
+
+</html>
