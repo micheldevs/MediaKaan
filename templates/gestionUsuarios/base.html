@@ -19,11 +19,27 @@
          <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-danger border-bottom box-shadow">
             <img src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" width="30" height="30" class="d-inline-block align-top" alt="">
             <h5 class="my-0 mr-md-auto font-weight-normal" style="padding-left: 5px;">MediaKaanª</h5>
-            <nav class="my-2 my-md-0 mr-md-3">
+            <nav class="mx-auto">
                <form class="form-inline mt-2 mt-md-0">
                   <div class="form-group">
                      <div class="input-group">
-                        <input class="form-control" type="text" placeholder="Buscar multimedia..." aria-label="Buscar">
+                        <input class="form-control" type="text" placeholder="Buscar artículos/usuarios..." aria-label="Buscar">
+                        <span class="input-group-append">
+                           <select id="inputSearch" class="selectpicker">
+                              <optgroup label="Artículos">
+                                 <option selected>Todos</option>
+                                 <option>Películas</option>
+                                 <option>Series</option>
+                                 <option>Videojuegos</option>
+                                 <option>Cómics</option>
+                                 <option>Libros</option>
+                                 <option>Música</option>
+                              </optgroup>
+                              <optgroup label="Gente">
+                                 <option>Usuarios</option>
+                              </optgroup>
+                           </select>
+                        </span>
                         <span class="input-group-append">
                            <button class="btn btn-secondary" type="submit">Buscar</button>
                         </span>
@@ -49,12 +65,29 @@
                   <li class="nav-item">
                      <a class="nav-link" href="{% url 'index' %}">Inicio</a>
                   </li>
+                  {% if user.is_authenticated %}
                   <li class="nav-item">
                      <a class="nav-link" href="#">Chats</a>
                   </li>
+                  {% else %}
+                  <li class="nav-item">
+                     <a class="nav-link disabled" data-toggle="tooltip" data-placement="bottom" title="Inicie sesión para acceder a esta función." href="#">Chats</a>
+                  </li>
+                  {% endif %}
                   <li class="nav-item">
                      <a class="nav-link" href="{% url 'about' %}">Acerca de</a>
                   </li>
+                  {% if user.is_authenticated %}
+                  <li class="nav-item dropdown show">
+                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ user.username }}</a>
+                     <div class="dropdown-menu">
+                       <a class="dropdown-item" href="#">Mi perfil</a>
+                       <a class="dropdown-item" href="#">Mis artículos</a>
+                       <div class="dropdown-divider"></div>
+                       <a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a>
+                     </div>
+                  </li>
+                  {% endif %}
                </ul>
             </div>
          </nav>
