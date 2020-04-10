@@ -11,7 +11,7 @@ class UsuarioInfo(models.Model):
         Modelo de datos para la información adicional de los usuarios.
 
         Se compone de:
-        - Un modelo User (con username, email, password, fecha de unión, etc...)
+        - Un modelo User que hace de clave extranjera primaria (con username, email, password, fecha de unión, etc...)
         - Un avatar para el perfil
         - Una pequeña descripción
         - La valoración de su perfil en la aplicación
@@ -25,13 +25,14 @@ class UsuarioInfo(models.Model):
     fechaNacimiento=models.DateField(default=timezone.now, verbose_name='Fecha de nacimiento')
 
     def __str__(self):
-        return "Usuario: %s con email %s y fecha de creacion %s" % (self.usuario.username, self.usuario.email, self.usuario.date_joined)
+        return "Usuario: %s con email %s y fecha de creación %s" % (self.usuario.username, self.usuario.email, self.usuario.date_joined)
     
 class UsuarioUbicacion(models.Model):
     """
     Modelo de datos para la ubicación del usuario.
 
     Se compone de:
+    - Un modelo User que hace de clave extranjera primaria (con username, email, password, fecha de unión, etc...)
     - La latitud de la ubicación del usuario
     - La longitud de la ubicación del usuario
     """
