@@ -34,6 +34,11 @@ class Media(models.Model):
     asignado=models.ForeignKey(User, on_delete=models.SET_NULL, related_name='user_asignado', blank=True, null=True)
     fechaAd=models.DateTimeField(auto_now_add=True, verbose_name='Fecha de adición')
 
+    def categoria_text(self):
+        return CategoriaType[self.categoria].value
+    def tags_as_list(self):
+        return self.tags.split(',')
+
     def __str__(self):
         return "Media: %s con propietario %s, nombre %s y fecha de creación %s" % (self.media_id, self.propietario.username, self.nombre, self.propietario.date_joined)
 

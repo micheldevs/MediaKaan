@@ -3,4 +3,6 @@ from . import views
 
 app_name = 'gestionArticulos'
 
-urlpatterns = []
+urlpatterns = [
+    url(r'^resultados/$', views.articles_results, name='artresults'),
+]

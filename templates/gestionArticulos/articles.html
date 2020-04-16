@@ -1,0 +1,50 @@
+{% extends "gestionUsuarios/base.html" %}
+{% block title %} MediaKaanª | Búsqueda {% endblock %}
+{% load static %}
+{% block body_block %}
+<div class="row">
+
+    <div class="col-lg-12">
+        <h1 class="my-4">Resultados en la categoría {{categoria}}</h1>
+        <h2 class="my-4">{{categoria}} > "{{consulta}}"</h2>
+        {% if articulos %}
+        <h2 class="my-4">Se han encontrado {{articulos.count}} artículos</h2>
+        {% endif %}
+        <hr>
+    </div>
+
+    {% if articulos %}
+    <div class="col-lg-12">
+        <div class="row">
+            {% for articulo in articulos %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100">
+                    <a href="#"><img class="card-img-top" src="{% static "gestionUsuarios/img/articulo.jpg" %}" width="700" height="400" alt=""></a>
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            <a href="#">{{articulo.nombre}}</a>
+                        </h4>
+                        <h5>{{articulo.categoria_text}}</h5>
+                        <p class="card-text">{{articulo.descripcion}}</p>
+                        <span class="badge badge-pill badge-info">{{articulo.accion}}</span>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">
+                            {% for tag in articulo.tags_as_list %}
+                                #{{tag}}
+                            {% endfor %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="col-lg-12">
+        <h2 class="my-4">No se han encontrado artículos para la búsqueda realizada.</h1>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from gestionUsuarios.forms import UsuarioForm, UsuarioInfoForm, UsuarioUbicacionForm
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
@@ -19,13 +19,6 @@ def about(request):
     Creará una respuesta al usuario mostrando la página de información de la aplicación.
     """
     return render(request,'about.html')
-    
-@login_required
-def special(request):
-    """
-    Informará a través de un string al usuario de que esté ya se encuentra logueado.
-    """
-    return HttpResponse("Ya te encuentras logueado.")
 
 @login_required
 def user_logout(request):
