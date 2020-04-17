@@ -7,7 +7,7 @@ from gestionArticulos.enums import CategoriaType
 
 def articles_results(request):
     """
-    Creará una respuesta al usuario mostrando la página índice de la aplicación.
+    Devolverá al usuario los resultados de los artículos encontrados a traves de su búsqueda.
     """
 
     if request.method == 'GET':
@@ -16,9 +16,20 @@ def articles_results(request):
         articulos = None
 
         if consulta and categoria:
+            if ',' in consulta:
+                taglist = consulta.split(',')
+                print(taglist)
+            
             if categoria != "Todas":
-                articulos=Media.objects.filter(categoria__exact=CategoriaType(categoria).name, nombre__icontains=consulta)
+                if ',' in consulta:
+                    articulos=Media.objects.filter(categoria__exact=CategoriaType(categoria).name, tags__name__in=taglist)
+                else:
+                    articulos=Media.objects.filter(categoria__exact=CategoriaType(categoria).name, nombre__icontains=consulta)
             else:
-                articulos=Media.objects.filter(nombre__icontains=consulta)
+                if ',' in consulta:
+                    articulos=Media.objects.filter(tags__name__in=taglist)
+                else:
+                    articulos=Media.objects.filter(nombre__icontains=consulta)
+
             print(articulos)
     return render(request, 'gestionArticulos/articles.html', {'consulta':consulta, 'categoria':categoria, 'articulos':articulos})
