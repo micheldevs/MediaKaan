@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django import forms
 
 from gestionUsuarios.models import UsuarioInfo, UsuarioUbicacion, User
 
@@ -35,6 +36,12 @@ class UsuarioUbicacionAdmin(admin.ModelAdmin):
         if UsuarioUbicacion:
             return UsuarioUbicacion.usuario.username
     
+    # Añade un textarea al formulario del administrador para la bio del usuario
+    def get_form(self, request, obj=None, **kwargs):
+        kwargs['widgets'] = {'bio': forms.Textarea}
+        return super().get_form(request, obj, **kwargs)
+
+
     list_display = ("username", "latUb", "lngUb")
     search_fields = ("username", "latUb", "lngUb")
 
