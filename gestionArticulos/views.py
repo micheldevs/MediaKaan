@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from gestionArticulos.models import Media
+from gestionUsuarios.models import UsuarioInfo, UsuarioUbicacion
 from gestionArticulos.enums import CategoriaType
 
 # Create your views here.
@@ -33,3 +34,22 @@ def articles_results(request):
 
             print(articulos)
     return render(request, 'gestionArticulos/articles.html', {'consulta':consulta, 'categoria':categoria, 'articulos':articulos})
+
+def article(request):
+    """
+    Devolverá al usuario el artículo consultado con información del propietario y su ubicación.
+    """
+
+    if request.method == 'GET':
+        id = request.GET.get('id')
+        articulo = None
+        usuarioinfo = None
+        usuarioub = None
+
+        if id:
+            articulo=Media.objects.filter(media_id=id)
+            if articulo:
+                usuarioinfo=UsuarioInfo.objects.filter(usuario=articulo[0].propietario)
+                usuarioub=UsuarioUbicacion.objects.filter(usuario=articulo[0].propietario)
+
+    return render(request, 'gestionArticulos/article.html', {'articulo':articulo, 'usuarioinfo':usuarioinfo, 'usuarioub':usuarioub})

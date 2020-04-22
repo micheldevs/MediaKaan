@@ -1,5 +1,5 @@
 {% extends "gestionUsuarios/base.html" %}
-{% block title %} MediaKaanª | Búsqueda {% endblock %}
+{% block title %} MediaKaanª | Búsqueda "{{consulta}}" {% endblock %}
 {% load static %}
 {% block body_block %}
 <div class="row">
@@ -22,10 +22,10 @@
             {% for articulo in articulos %}
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100">
-                    <a href="#"><img class="card-img-top" src="{% get_media_prefix %}{{articulo.fotoart}}" width="700" height="400" alt=""></a>
+                    <a href="{% url 'gestionArticulos:art' %}?id={{articulo.media_id}}"><img class="card-img-top" src="{% get_media_prefix %}{{articulo.fotoart}}" width="700" height="400" alt=""></a>
                     <div class="card-body">
                         <h4 class="card-title">
-                            <a href="#">{{articulo.nombre}}</a>
+                            <a href="{% url 'gestionArticulos:art' %}?id={{articulo.media_id}}">{{articulo.nombre}}</a>
                         </h4>
                         <h5>{{articulo.categoria_text}}</h5>
                         <p class="card-text">{{articulo.descripcion}}</p>

@@ -22,6 +22,11 @@ class UsuarioInfoAdmin(admin.ModelAdmin):
         if UsuarioInfo:
             return UsuarioInfo.usuario.email
 
+    # Añade un textarea al formulario del administrador para la bio del usuario
+    def get_form(self, request, obj=None, **kwargs):
+        kwargs['widgets'] = {'bio': forms.Textarea}
+        return super().get_form(request, obj, **kwargs)
+
     list_display = ("username", "email", "fechaNacimiento")
     search_fields = ("username", "email", "fechaNacimiento")
     list_filter = ("fechaNacimiento",)
@@ -35,11 +40,6 @@ class UsuarioUbicacionAdmin(admin.ModelAdmin):
     def username(self, UsuarioUbicacion):
         if UsuarioUbicacion:
             return UsuarioUbicacion.usuario.username
-    
-    # Añade un textarea al formulario del administrador para la bio del usuario
-    def get_form(self, request, obj=None, **kwargs):
-        kwargs['widgets'] = {'bio': forms.Textarea}
-        return super().get_form(request, obj, **kwargs)
 
 
     list_display = ("username", "latUb", "lngUb")
