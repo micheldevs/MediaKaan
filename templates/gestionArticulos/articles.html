@@ -11,7 +11,7 @@
         <h1 class="my-4">Resultados en la categoría {{categoria}}</h1>
         <h2 class="my-4">{{categoria}} > "{{consulta}}"</h2>
         {% if articulos %}
-        <h2 class="my-4">Se han encontrado {{articulos.count}} artículos</h2>
+        <h2 class="my-4">Se han encontrado {{n_articulos}} artículos</h2>
         {% endif %}
         <hr>
     </div>
@@ -50,6 +50,26 @@
                 </div>
             </div>
             {% endfor %}
+        </div>
+        <div class="row">
+            <nav aria-label="pagination">
+                <ul class="pagination">
+                  
+                  <li class="page-item {% if p == 1 %}disabled{% endif %}">
+                    <a class="page-link" href="./?consulta={{consulta}}&categoria={{categoria}}&p={{p|add:-1}}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="./?consulta={{consulta}}&categoria={{categoria}}&p={{p}}">{{p}} / {{n_pags}}</a></li>
+                  <li class="page-item {% if p == n_pags %}disabled{% endif %}">
+                    <a class="page-link" href="./?consulta={{consulta}}&categoria={{categoria}}&p={{p|add:1}}" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
         </div>
     </div>
     {% else %}
