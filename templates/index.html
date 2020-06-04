@@ -4,9 +4,9 @@
 <div class="jumbotron">
     <h1>¡Bienvenido a MediaKaanª!</h1>
     {% if user.is_authenticated %}
-    <h2>Saludos {{ user.username }}.</h2>
+    <h2>Saludos {{ user.username }}. Registre un artículo, chatee o esté pendiente de los nuevos artículos realizando una consulta.</h2>
     {% else %}
-    <h2>Puede utilizar la página en modo invitado o bien iniciar sesión.</h2>
+    <h2>La plataforma para donar o intercambiar multimedia de forma desinteresada entre usuarios. Navegue como invitado o inicie sesión para conocer más.</h2>
     {% endif %}
 </div>
 {% endblock %}

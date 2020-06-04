@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load staticfiles %}
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{% static "gestionUsuarios/img/logo/mediak-logo.ico" %}">
+    <title>MediaKaanª | Activación de cuenta</title>
+    {% block css %}
+    <link href="{% static "gestionUsuarios/css/bootstrap.css" %}" rel="stylesheet">
+    <link href="{% static "gestionUsuarios/css/signin.css" %}" rel="stylesheet">
+    {% endblock %}
+ </head>
+ <body class="text-center">
+    <div class="card">
+       <div class="card-header">
+          <h1 class="h3 mb-3 font-weight-normal">Activación de la cuenta</h1>
+          <img class="mb-4" src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" alt="" width="72" height="72">
+       </div>
+       <div class="card-body">
+          {% if success %}
+          <div class="alert alert-success" role="alert">
+             <strong>Su cuenta se ha activado satisfactoriamente.</strong>
+             <p>Para iniciar sesión a continuación, haga click <a href="{% url 'gestionUsuarios:user_login' %}">aquí</a></p>
+          </div>
+          {% else %}
+          <div class="alert alert-danger" role="alert">
+             <strong>La activación de la cuenta ha fallado.</strong>
+             <p>El código de la URL de activación de su cuenta no es correcto, por favor revise su email en busca de la URL correcta.</p>
+          </div>
+          {% endif %}
+       </div>
+       <div class="card-footer">
+          <div class="d-flex justify-content-center links">
+             <p>Inicie sesión <a href="{% url 'gestionUsuarios:user_login' %}">aquí</a></p>
+          </div>
+          <p class="mt-5 mb-3 text-muted">MediaKaanª 2019-2020</p>
+       </div>
+    </div>
+ </body>
+</html>
