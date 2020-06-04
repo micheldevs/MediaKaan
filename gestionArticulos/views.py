@@ -18,6 +18,8 @@ def articles_results(request):
         pag = request.GET.get('p')
         articulos_ppag = 5  # Artículos por página
         articulos = None
+        n_pags = None
+        n_articulos = None
 
         if consulta and categoria:
             if not pag:  # Mantenemos que el número de página exista si el usuario la borra de la cabecera o ha hecho una búsqueda
@@ -46,15 +48,18 @@ def articles_results(request):
 
             # Gestionamos las páginas y los resultados a mostrar en esta
             n_articulos = articulos.count()
-            if n_articulos % articulos_ppag < 1.0:
-                n_pags = int(n_articulos/articulos_ppag)
-                if n_pags == 0:  # Si hay menos de 10 artículos, habrá una sola página.
-                    n_pags = 1
-            else:  # Si el resultado de artículos por página es impar y mayor que uno, añadimos una página más.
-                n_pags = int(n_articulos/articulos_ppag)+1
+            if n_articulos != 0:
+                if n_articulos % articulos_ppag < 1.0:
+                    n_pags = int(n_articulos/articulos_ppag)
+                    if n_pags == 0:  # Si hay menos de 10 artículos, habrá una sola página.
+                        n_pags = 1
+                else:  # Si el resultado de artículos por página es impar y mayor que uno, añadimos una página más.
+                    n_pags = int(n_articulos/articulos_ppag)+1
 
-            if pag > n_pags:  # Mantenemos el número de página debajo del límite superior.
-                pag = n_pags
+                if pag > n_pags:  # Mantenemos el número de página debajo del límite superior.
+                    pag = n_pags
+            else:
+                n_pags = 0
 
             # Recoge los artículos por página a partir del índice especificado entre los artículos.
             # En Django la función de OFFSET para los datos se establece con la sintaxis del array de python. [OFFSET, OFFSET+LIMIT]
