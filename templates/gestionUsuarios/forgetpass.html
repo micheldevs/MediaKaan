@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load staticfiles %}
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{% static "gestionUsuarios/img/logo/mediak-logo.ico" %}">
+    <title>MediaKaanª | Recuperación de usuario</title>
+    {% block css %}
+    <link href="{% static "gestionUsuarios/css/bootstrap.css" %}" rel="stylesheet">
+    <link href="{% static "gestionUsuarios/css/signin.css" %}" rel="stylesheet">
+    {% endblock %}
+ </head>
+ <body class="text-center">
+    <div class="card">
+       <div class="card-header">
+          <h1 class="h3 mb-3 font-weight-normal">Recuperación de usuario</h1>
+          <img class="mb-4" src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" alt="" width="72" height="72">
+       </div>
+       <div class="card-body">
+        <form class="form-signin" method="post" action="{% url 'gestionUsuarios:forget_pass' %}">
+            {% csrf_token %}
+            <label for="inputEmail" class="sr-only">Email del usuario</label>
+            <input type="email" id="inputEmail" name="email" class="form-control{% if reset != None and reset == False %} is-invalid{% endif %}" placeholder="Escriba su email de usuario" required autofocus>
+            <hr>
+            <button class="btn btn-lg btn-success btn-block" type="submit">Restaurar contraseña</button>
+        </form>
+        {% if reset != None and reset == True %}
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading" style="padding-bottom: 20;">Mensaje de recuperación enviado</h4>
+            <p>Cambie la contraseña desde el email que <br> se le ha enviado e inicie sesión desde <a href="{% url 'gestionUsuarios:user_login' %}">aquí.</a></p>
+        </div>
+        {% endif %}
+        {% if reset != None and reset == False %}
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading" style="padding-bottom: 20;">Correo incorrecto</h4>
+            <p>El correo introducido no consta entre nuestros registros de usuario, <br> revise si el campo de email esté bien escrito y pruebe de nuevo.</p>
+        </div>
+        {% endif %}
+       </div>
+       <div class="card-footer">
+          <div class="d-flex justify-content-center links">
+             <p>Inicie sesión <a href="{% url 'gestionUsuarios:user_login' %}">aquí</a></p>
+          </div>
+          <p class="mt-5 mb-3 text-muted">MediaKaanª 2019-2020</p>
+       </div>
+    </div>
+ </body>
+</html>

@@ -117,6 +117,28 @@ def activate(request, uidb64, token):
     return render(request,'gestionUsuarios/activateacc.html',
                           {'success':success})
 
+def forget_pass(request):
+    """
+    Renderiza la página de recuperación de la cuenta del usuario a partir de un formulario donde el usuario deberá introducir su correo electrónico.
+    """
+    if request.method == 'POST':
+        reset = False
+        email = request.POST.get('email')
+
+        try:
+            usuario = User.objects.get(email=email)
+        except:
+            usuario = None
+
+        if usuario:
+
+            # Envío de correo
+
+            reset = True
+
+        return render(request,'gestionUsuarios/forgetpass.html', {'reset':reset})
+    else:
+        return render(request,'gestionUsuarios/forgetpass.html',{})
                            
 def user_login(request):
     """
