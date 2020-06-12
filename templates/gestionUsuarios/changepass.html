@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+{% load widget_tweaks %}
+
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, height=device-heigth, initial-scale=1, shrink-to-fit=no">
+   <meta name="description" content="">
+   <meta name="author" content="">
+   <link rel="icon" href="{% static "gestionUsuarios/img/logo/mediak-logo.ico" %}">
+   <title>MediaKaanª | Cambio de contraseña</title>
+   {% block css %}
+   <link href="{% static "gestionUsuarios/css/bootstrap.css" %}" rel="stylesheet">
+   <link href="{% static "gestionUsuarios/css/signin.css" %}" rel="stylesheet">
+   {% endblock %}
+</head>
+
+<body>
+   <div class="card">
+      <div class="card-header text-center">
+         <h1 class="h3 mb-3 font-weight-normal">Cambio de contraseña</h1>
+         <img class="mb-4" src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" alt="" width="72" height="72">
+      </div>
+      <div class="card-body">
+         {% if changed != None and changed == True %}
+         <h1>¡Su contraseña ha sido cambiada!</h1>
+         <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading" style="padding-bottom: 20;">Ha recuperado su cuenta adecuadamente</h4>
+            <p>Inicie sesión a continuación desde <a href="{% url 'gestionUsuarios:user_login' %}">aquí.</a></p>
+         </div>
+         {% else %}
+         <form class="form-signup" method="post">
+            {% csrf_token %}
+            <div>
+                <label for="id_password">Nueva contraseña</label>
+                {% if usuario_form.password.errors %}
+                {% render_field usuario_form.password class="form-control is-invalid" placeholder="Escriba su nueva contraseña" required="" %}
+                <small class="form-text text-muted" id="helpPassword">
+                   {{ usuario_form.password.help_text }}
+                </small>
+                <small class="form-text text-muted" id="errorPassword">
+                   {% for error in usuario_form.password.errors %}
+                   <p class="text-danger">{{ error }}</p>
+                   {% endfor %}
+                </small>
+                {% else %}
+                {% render_field usuario_form.password class="form-control" placeholder="Escriba su nueva contraseña" required="" %}
+                <small class="form-text text-muted" id="helpPassword">
+                   {{ usuario_form.password.help_text }}
+                </small>
+                {% endif %}
+            </div>
+            <div>
+                <label for="id_passwordRep">Repita su nueva contraseña</label>
+                {% if usuario_form.passwordRep.errors %}
+                {% render_field usuario_form.passwordRep class="form-control is-invalid" placeholder="Repita su nueva contraseña" required="" %}
+                <small class="form-text text-muted" id="errorPasswordRep">
+                    {% for error in usuario_form.passwordRep.errors %}
+                    <p class="text-danger">{{ error }}</p>
+                    {% endfor %}
+                </small>
+                {% else %}
+                {% render_field usuario_form.passwordRep class="form-control" placeholder="Repita su nueva contraseña" required="" %}
+                {% endif %}
+            </div>
+            <hr>
+            <button class="btn btn-lg btn-success btn-block" type="submit">Cambiar contraseña</button>
+         </form>
+         {% if changed == False %}
+         <br>
+         <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading" style="padding-bottom: 20;">Los tokens no son correctos</h4>
+            <p>
+                Los tokens introducidos para cambiar la contraseña no son correctos <br>
+                obtenga un nuevo enlace de recuperación <a href="{% url 'gestionUsuarios:forget_pass' %}">aquí.</a>
+            </p>
+         </div>
+         {% endif%}
+         {% endif %}
+      </div>
+      <div class="card-footer">
+         <p class="mt-5 mb-3 text-muted text-center">MediaKaanª 2019-2020</p>
+      </div>
+   </div>
+   {% block javascript %}
+   <script type="text/javascript" src="{% static "gestionUsuarios/js/jquery-3.4.1.min.js" %}"></script>
+   {% endblock %}
+</body>
+
+</html>

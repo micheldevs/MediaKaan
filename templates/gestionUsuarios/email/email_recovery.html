@@ -1,0 +1,51 @@
+{% autoescape off %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Email de recuperación</title>
+</head>
+<body style="margin: 0; padding: 0;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+        <tr>
+            <td align="center" bgcolor="#00c7c0" style="padding: 40px 0 30px 0;">
+                <img src="https://raw.githubusercontent.com/FosterGun/MediaKaan/master/static/gestionUsuarios/img/logo/email-header.png" alt="Email activación imagen"
+                    width="300" height="230" style="display: block;" />
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#ffffff" style="padding: 40px 30px 40px 30px; border: 1px solid #cccccc;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                        <td style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;">
+                            <b>Hola {{ usuario.username }}</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 18px;">
+                            Si ha recibido el siguiente correo significa que ha olvidado su contraseña de usuario en MediaKaanª.
+                            Para recuperarla renueve su contraseña de usuario en este enlace único pinchando <a target="_blank" rel="noopener noreferrer" href="http://{{ domain }}{% url 'gestionUsuarios:change_pass' uidb64=uid token=token %}">aquí</a>.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        <tr>
+            <td bgcolor="#ee4c50" style="padding: 30px 30px 30px 30px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                        <td width="75%" style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;">
+                            &reg; MediaKaanª 2019-2020<br/>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+{% endautoescape %}

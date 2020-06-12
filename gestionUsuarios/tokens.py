@@ -9,4 +9,4 @@ class TokenGenerator(PasswordResetTokenGenerator):
             six.text_type(usuario.is_active)
         )
 
-account_activation_token = TokenGenerator()
+account_token = TokenGenerator()

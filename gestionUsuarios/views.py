@@ -10,7 +10,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import EmailMessage
-from gestionUsuarios.tokens import account_activation_token
+from gestionUsuarios.tokens import account_token
 
 # Create your views here.
 # Las vistas se encargarán de gestionar las peticiones y las respuestas de las páginas web de la aplicación.
@@ -73,7 +73,7 @@ def register(request):
                 'usuario': usuario,
                 'domain': current_site.domain,
                 'uid': urlsafe_base64_encode(force_bytes(usuario.pk)),
-                'token': account_activation_token.make_token(usuario),
+                'token': account_token.make_token(usuario),
             })
             to_email = usuario_form.cleaned_data.get('email')
             email = EmailMessage(
@@ -107,7 +107,7 @@ def activate(request, uidb64, token):
     except:
         usuario = None
 
-    if usuario is not None and account_activation_token.check_token(usuario, token):
+    if usuario is not None and account_token.check_token(usuario, token):
         usuario.is_active = True
         usuario.save()
         success = True
@@ -121,24 +121,71 @@ def forget_pass(request):
     """
     Renderiza la página de recuperación de la cuenta del usuario a partir de un formulario donde el usuario deberá introducir su correo electrónico.
     """
+    
     if request.method == 'POST':
         reset = False
-        email = request.POST.get('email')
+        email_dir = request.POST.get('email')
 
         try:
-            usuario = User.objects.get(email=email)
+            usuario = User.objects.get(email=email_dir)
         except:
             usuario = None
 
         if usuario:
 
-            # Envío de correo
+            # Envío de correo de recuperación (seguimos la misma estrategia que con el correo de activación)
+            current_site = get_current_site(request)
+            mail_subject = 'Recuperación de la cuenta de usuario en MediaKaanª'
+            message = render_to_string('gestionUsuarios/email/email_recovery.html', {
+                'usuario': usuario,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(usuario.pk)),
+                'token': account_token.make_token(usuario),
+            })
+            to_email = email_dir
+            email = EmailMessage(
+                        mail_subject, message, to=[to_email]
+            )
+            email.content_subtype = "html" # Especificamos que el correo eléctronico se envíe en modo html para que respete el cuerpo del mensaje que le hemos asignado
+            email.send()
 
             reset = True
 
         return render(request,'gestionUsuarios/forgetpass.html', {'reset':reset})
     else:
         return render(request,'gestionUsuarios/forgetpass.html',{})
+
+def change_pass(request, uidb64, token):
+    """
+    Renderiza la página de cambio de contraseña para el usuario con un token único para hacerlo.
+    """
+
+    changed = None
+    if request.method == 'POST':
+        usuario_form = UsuarioForm(data=request.POST)
+
+        if not usuario_form['password'].errors and not usuario_form['passwordRep'].errors: # Comprobamos si ha habido errores en los campos del formulario
+
+            try:
+                uid = force_text(urlsafe_base64_decode(uidb64))
+                usuario = User.objects.get(pk=uid)
+            except:
+                usuario = None
+
+            if usuario is not None and account_token.check_token(usuario, token):
+                usuario.set_password(usuario_form.cleaned_data.get('password'))
+                usuario.save()
+                changed = True
+            else:
+                changed = False
+        else:
+            print(usuario_form.errors)
+    else:
+        usuario_form = UsuarioForm()
+    
+    return render(request,'gestionUsuarios/changepass.html',
+                          {'usuario_form':usuario_form,
+                           'changed':changed})
                            
 def user_login(request):
     """
