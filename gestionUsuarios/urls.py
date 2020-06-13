@@ -11,4 +11,6 @@ urlpatterns = [
     url(r'^olvidopass/$', views.forget_pass, name='forget_pass'),
     url(r'^cambiopass/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         views.change_pass, name='change_pass'),
+    url(r'^miperfil/$', views.my_profile, name='my_profile'),
+    url(r'^eliminarperfil/$', views.delete_user, name='delete_user'),
 ]

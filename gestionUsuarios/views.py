@@ -13,7 +13,9 @@ from django.core.mail import EmailMessage
 from gestionUsuarios.tokens import account_token
 
 # Create your views here.
-# Las vistas se encargarán de gestionar las peticiones y las respuestas de las páginas web de la aplicación.
+# Las vistas se encargarán de gestionar las peticiones y las respuestas de las páginas web de la aplicación. (renderizará plantillas)
+
+# Vistas generales
 
 def index(request):
     """
@@ -27,11 +29,14 @@ def about(request):
     """
     return render(request,'about.html')
 
+# Vistas de gestión de creación o logueo del usuario
+
 @login_required
 def user_logout(request):
     """
     Deslogueará al usuario y lo devolverá a la página índice de la aplicación.
     """
+
     logout(request)
     return HttpResponseRedirect(reverse('index'))
 
@@ -91,10 +96,10 @@ def register(request):
         ubus_form = UsuarioUbicacionForm(data=request.POST)
     
     return render(request,'gestionUsuarios/signup.html',
-                          {'usuario_form':usuario_form,
-                           'infous_form':infous_form,
-                           'ubus_form':ubus_form,
-                           'registered':registered})
+                          {'usuario_form': usuario_form,
+                           'infous_form': infous_form,
+                           'ubus_form': ubus_form,
+                           'registered': registered})
 
 def activate(request, uidb64, token):
     """
@@ -115,7 +120,7 @@ def activate(request, uidb64, token):
         success = False
     
     return render(request,'gestionUsuarios/activateacc.html',
-                          {'success':success})
+                          {'success': success})
 
 def forget_pass(request):
     """
@@ -132,7 +137,6 @@ def forget_pass(request):
             usuario = None
 
         if usuario:
-
             # Envío de correo de recuperación (seguimos la misma estrategia que con el correo de activación)
             current_site = get_current_site(request)
             mail_subject = 'Recuperación de la cuenta de usuario en MediaKaanª'
@@ -151,13 +155,13 @@ def forget_pass(request):
 
             reset = True
 
-        return render(request,'gestionUsuarios/forgetpass.html', {'reset':reset})
+        return render(request,'gestionUsuarios/forgetpass.html', {'reset': reset})
     else:
-        return render(request,'gestionUsuarios/forgetpass.html',{})
+        return render(request,'gestionUsuarios/forgetpass.html', {})
 
 def change_pass(request, uidb64, token):
     """
-    Renderiza la página de cambio de contraseña para el usuario con un token único para hacerlo.
+    Renderiza la página de cambio de contraseña para el usuario con su token correspondiente para hacerlo.
     """
 
     changed = None
@@ -184,8 +188,8 @@ def change_pass(request, uidb64, token):
         usuario_form = UsuarioForm()
     
     return render(request,'gestionUsuarios/changepass.html',
-                          {'usuario_form':usuario_form,
-                           'changed':changed})
+                          {'usuario_form': usuario_form,
+                           'changed': changed})
                            
 def user_login(request):
     """
@@ -210,3 +214,35 @@ def user_login(request):
             return render(request, 'gestionUsuarios/signin.html', {'error': error})
     else:
         return render(request, 'gestionUsuarios/signin.html', {})
+
+# Vistas de los paneles del usuario
+
+@login_required
+def my_profile(request):
+    """
+    Renderizará el perfil del usuario, donde se darán opciones para editar datos.
+    """
+
+    return render(request, 'gestionUsuarios/userprofile.html', {})
+
+@login_required
+def delete_user(request):
+    """
+    Renderizará el campo de contraseña del usuario junto a un botón para eliminar la cuenta del usuario.
+    """
+    
+    delerror = False
+    if request.method == 'POST':
+        password = request.POST.get('password')
+
+        usuario = authenticate(username=request.user.username, password=password)
+
+        if usuario:
+            usuario.delete()
+            logout(request)
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            delerror = True
+
+
+    return render(request, 'gestionUsuarios/deleteprofile.html', {'delerror': delerror})

@@ -1,0 +1,40 @@
+{% extends "gestionUsuarios/base.html" %}
+{% block title %} MediaKaanª | Eliminar usuario {% endblock %}
+{% load static %}
+{% block body_block %}
+<div class="card">
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs">
+        <li class="nav-item waves-effect waves-light">
+          <a class="nav-link" href="{% url 'gestionUsuarios:my_profile' %}">Mi perfil</a>
+        </li>
+        <li class="nav-item waves-effect waves-light">
+          <a class="nav-link" href="#">Mis artículos</a>
+        </li>
+        <li class="nav-item waves-effect waves-light">
+          <a class="nav-link active" href="{% url 'gestionUsuarios:delete_user' %}">Eliminar perfil</a>
+        </li>
+      </ul>
+    </div>
+    <div class="card-body">
+        <h4 class="card-title">Eliminar perfil</h4>
+        <hr>
+        <form class="form-signup" method="post">
+            {% csrf_token %}
+               <label for="inputPassword" class="col-sm-4 col-form-label">Eliminación de la cuenta</label>
+               <div class="col-sm-4">
+                    <input type="password" id="inputPassword" name="password" class="form-control {% if delerror %} is-invalid {% endif %}" placeholder="Contraseña" required>
+                    <small class="form-text text-muted" id="help">
+                        <p>Para eliminar la cuenta se precisa de su contraseña de usuario, una vez se elimine se le redirigirá a inicio.</p>
+                    </small>
+                    {% if delerror %}
+                    <small class="form-text text-muted" id="error">
+                        <p class="text-danger">La contraseña introducida para borrar su cuenta de usuario es incorrecta.</p>
+                    </small>
+                    {% endif %}
+                    <button class="btn btn-lg btn-danger btn-block" type="submit">Eliminar cuenta</button>
+               </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
