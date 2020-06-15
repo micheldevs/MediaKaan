@@ -1,16 +1,15 @@
 from django.shortcuts import render
 from gestionUsuarios.forms import UsuarioForm, UsuarioInfoForm, UsuarioUbicacionForm
-from gestionUsuarios.models import User
+from gestionUsuarios.models import User, UsuarioInfo
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.template.loader import render_to_string
-from django.contrib.sites.shortcuts import get_current_site
-from django.utils.encoding import force_bytes, force_text
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.core.mail import EmailMessage
+from gestionUsuarios.emails import activation_email, recovery_email
 from gestionUsuarios.tokens import account_token
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
+
 
 # Create your views here.
 # Las vistas se encargarán de gestionar las peticiones y las respuestas de las páginas web de la aplicación. (renderizará plantillas)
@@ -61,31 +60,20 @@ def register(request):
             usuario.save()
 
             # Creación del perfil de información del usuario
+            print('Peta1')
             infous = infous_form.save(commit=False)
             infous.usuario = usuario
             infous.avatar = request.FILES['avatar']
             infous.save()
 
             # Creación de la ubicación del usuario
+            print('Peta2')
             ubus = ubus_form.save(commit=False)
             ubus.usuario = usuario
             ubus.save()
 
             # Envío del email para activar la cuenta
-            current_site = get_current_site(request)
-            mail_subject = 'Activación de la cuenta de usuario en MediaKaanª'
-            message = render_to_string('gestionUsuarios/email/email_active.html', {
-                'usuario': usuario,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(usuario.pk)),
-                'token': account_token.make_token(usuario),
-            })
-            to_email = usuario_form.cleaned_data.get('email')
-            email = EmailMessage(
-                        mail_subject, message, to=[to_email]
-            )
-            email.content_subtype = "html" # Especificamos que el correo eléctronico se envíe en modo html para que respete el cuerpo del mensaje que le hemos asignado
-            email.send()
+            activation_email(request, usuario, usuario_form)
 
             registered = True
         else:
@@ -138,21 +126,7 @@ def forget_pass(request):
 
         if usuario:
             # Envío de correo de recuperación (seguimos la misma estrategia que con el correo de activación)
-            current_site = get_current_site(request)
-            mail_subject = 'Recuperación de la cuenta de usuario en MediaKaanª'
-            message = render_to_string('gestionUsuarios/email/email_recovery.html', {
-                'usuario': usuario,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(usuario.pk)),
-                'token': account_token.make_token(usuario),
-            })
-            to_email = email_dir
-            email = EmailMessage(
-                        mail_subject, message, to=[to_email]
-            )
-            email.content_subtype = "html" # Especificamos que el correo eléctronico se envíe en modo html para que respete el cuerpo del mensaje que le hemos asignado
-            email.send()
-
+            recovery_email(request, usuario, email_dir)
             reset = True
 
         return render(request,'gestionUsuarios/forgetpass.html', {'reset': reset})
@@ -223,7 +197,27 @@ def my_profile(request):
     Renderizará el perfil del usuario, donde se darán opciones para editar datos.
     """
 
-    return render(request, 'gestionUsuarios/userprofile.html', {})
+    updated = False
+
+    try:
+        usuarioinfo = UsuarioInfo.objects.get(usuario=request.user)
+    except:
+        usuarioinfo = None
+    
+    if request.method == 'POST':
+        pass
+    else:
+        usuario_form = UsuarioForm()
+        infous_form = UsuarioInfoForm()
+        ubus_form = UsuarioUbicacionForm(data=request.POST)
+
+
+    return render(request, 'gestionUsuarios/userprofile.html',
+                        {'usuarioinfo': usuarioinfo,
+                        'usuario_form': usuario_form,
+                        'infous_form': infous_form,
+                        'ubus_form': ubus_form,
+                        'updated': updated})
 
 @login_required
 def delete_user(request):

@@ -1,27 +1,208 @@
 {% extends "gestionUsuarios/base.html" %}
 {% block title %} MediaKaanª | Mi perfil {% endblock %}
 {% load static %}
+{% load widget_tweaks %}
 {% block body_block %}
 <div class="card">
-    <div class="card-header">
-      <ul class="nav nav-tabs card-header-tabs">
-        <li class="nav-item waves-effect waves-light">
-          <a class="nav-link active" href="{% url 'gestionUsuarios:my_profile' %}">Mi perfil</a>
-        </li>
-        <li class="nav-item waves-effect waves-light">
-          <a class="nav-link" href="#">Mis artículos</a>
-        </li>
-        <li class="nav-item waves-effect waves-light">
-          <a class="nav-link" href="{% url 'gestionUsuarios:delete_user' %}">Eliminar perfil</a>
-        </li>
-      </ul>
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs">
+      <li class="nav-item waves-effect waves-light">
+        <a class="nav-link active" href="{% url 'gestionUsuarios:my_profile' %}">Mi perfil</a>
+      </li>
+      <li class="nav-item waves-effect waves-light">
+        <a class="nav-link" href="#">Mis artículos</a>
+      </li>
+      <li class="nav-item waves-effect waves-light">
+        <a class="nav-link" href="{% url 'gestionUsuarios:delete_user' %}">Eliminar perfil</a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body">
+    <h4 class="card-title">Mi perfil</h4>
+    {% if updated %}
+    <div class="alert alert-success alert-dismissible">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+      <strong>¡Perfil actualizado!</strong> Su perfil de usuario se ha actualizado correctamente.
     </div>
-    <div class="card-body">
-        <h4 class="card-title">Mi perfil</h4>
-        <hr>
-      
-      <p class="card-text">Perfil de usuario</p>
-      <a href="#" class="btn btn-primary waves-effect waves-light">Perfil</a>
+    {% endif %}
+    <hr>
+    <div class="row">
+      <div class="col-12 col-lg-8 col-md-6">
+        <h3 class="mb-0 text-truncated">{{user.username}}</h3>
+        <p>
+          {{usuarioinfo.bio}}
+        </p>
+        <p>Fecha de nacimiento: {{usuarioinfo.fechaNacimiento}}</p>
+        <p>Puntuación: {{usuarioinfo.valoracion}}</p>
+      </div>
+      <div class="col-12 col-lg-4 col-md-6 text-center">
+        <img class="rounded-circle border" src="{% get_media_prefix %}{{usuarioinfo.avatar}}" width="140" height="140">
+        <br>
+      </div>
     </div>
+    <hr>
+    <h4>Cambiar año de nacimiento</h4>
+    <form class="form-signup" method="post">
+      {% csrf_token %}
+      <div class="col-sm-4">
+        <label for="id_fechaNacimiento">Nueva fecha de nacimiento</label>
+        {% if infous_form.fechaNacimiento.errors %}
+        {% render_field infous_form.fechaNacimiento type="date" class="form-control  is-invalid" required="" %}
+        <small class="form-text text-muted" id="helpfechaNacimiento">
+           {{ infous_form.fechaNacimiento.help_text }}
+        </small>
+        <small class="form-text text-muted" id="errorfechaNacimiento">
+           {% for error in infous_form.fechaNacimiento.errors %}
+           <p class="text-danger">{{ error }}</p>
+           {% endfor %}
+        </small>
+        {% else %}
+        {% render_field infous_form.fechaNacimiento type="date" class="form-control" required="" %}
+        <small class="form-text text-muted" id="helpfechaNacimiento">
+           {{ infous_form.fechaNacimiento.help_text }}
+        </small>
+        {% endif %}
+        <br>
+        <button class="btn btn-lg btn-info btn-block" type="submit">Cambiar fecha</button>
+      </div>
+    </form>
+    <hr>
+    <h4>Cambiar foto de perfil</h4>
+    <form class="form-signup" method="post">
+      {% csrf_token %}
+      <div class="col-sm-4">
+        <label for=id_avatar>Seleccione su nuevo avatar</label>
+        <div class="custom-file">
+           <label class="custom-file-label" for="id_avatar">Seleccione su foto de usuario...</label>
+           {% if infous_form.avatar.errors %}
+           {% render_field infous_form.avatar class="custom-file-input is-invalid" required="" %}
+           <small class="form-text text-muted" id="helpAvatar">
+              {{ infous_form.avatar.help_text }}
+           </small>
+           <small class="form-text text-muted" id="errorAvatar">
+              {% for error in infous_form.avatar.errors %}
+              <p class="text-danger">{{ error }}</p>
+              {% endfor %}
+           </small>
+           {% else %}
+           {% render_field infous_form.avatar class="custom-file-input" required="" %}
+           <small class="form-text text-muted" id="helpAvatar">
+              {{ infous_form.avatar.help_text }}
+           </small>
+           {% endif %}
+        </div>
+        <button class="btn btn-lg btn-info btn-block" type="submit">Cambiar avatar</button>
+      </div>
+    </form>
+    <hr>
+    <h4>Editar biografía</h4>
+    <form class="form-signup" method="post">
+      {% csrf_token %}
+      <div class="col-sm-6">
+        <label for="id_bio">Escriba su nueva biografía</label>
+        {% if infous_form.bio.errors %}
+        {% render_field infous_form.bio class="form-control is-invalid" style="resize: none;" rows="3" maxlength="150" placeholder="Escriba su biografía de perfil (150 letras máximo; 100 letras mínimo)" required="" %}
+        <div class="word-counter">0/150</div>
+        <small class="form-text text-muted" id="errorBio">
+          {% for error in infous_form.bio.errors %}
+          <p class="text-danger">{{ error }}</p>
+          {% endfor %}
+        </small>
+        {% else %}
+        {% render_field infous_form.bio class="form-control" rows="3" maxlength="150" placeholder="Escriba su biografía de perfil (150 letras máximo; 100 letras mínimo)" required="" %}
+        <div class="word-counter">0/150</div>
+        {% endif %}
+        <br>
+        <button class="btn btn-lg btn-info btn-block" type="submit">Cambiar biografía</button>
+      </div>
+    </form>
+    <hr>
+    <h4>Cambio de email</h4>
+    <form class="form-signup" method="post">
+      {% csrf_token %}
+      <div class="col-sm-4">
+        <label for="id_email">Escriba su nuevo email</label>
+        {% render_field usuario_form.email class="form-control" placeholder="Dirección email" required="" %}
+        <br>
+        <button class="btn btn-lg btn-info btn-block" type="submit">Cambiar email</button>
+      </div>
+    </form>
+    <hr>
+    <h4>Cambio de contraseña</h4>
+    <form class="form-signup" method="post">
+      {% csrf_token %}
+      <div class="col-sm-4">
+        <label for="id_password">Escriba su nueva contraseña</label>
+        <input type="text" id="inputPassOld" name="passwordOld" class="form-control" placeholder="Antigua contraseña"
+          required>
+        <br>
+        {% if usuario_form.password.errors %}
+        {% render_field usuario_form.password class="form-control is-invalid" placeholder="Nueva contraseña" required="" %}
+        {% else %}
+        {% render_field usuario_form.password class="form-control" placeholder="Nueva contraseña" required="" %}
+        {% endif %}
+        <small class="form-text text-muted" id="helpPassword">
+          {{ usuario_form.password.help_text }}
+        </small>
+        <small class="form-text text-muted" id="errorPassword">
+          {% for error in usuario_form.password.errors %}
+          <p class="text-danger">{{ error }}</p>
+          {% endfor %}
+        </small>
+        {% if usuario_form.passwordRep.errors %}
+        {% render_field usuario_form.passwordRep class="form-control is-invalid" placeholder="Repita su nueva contraseña" required="" %}
+        {% else %}
+        {% render_field usuario_form.passwordRep class="form-control" placeholder="Repita su nueva contraseña" required="" %}
+        {% endif %}
+        <small class="form-text text-muted" id="errorPasswordRep">
+          {% for error in usuario_form.passwordRep.errors %}
+          <p class="text-danger">{{ error }}</p>
+          {% endfor %}
+        </small>
+        <br>
+        <button class="btn btn-lg btn-info btn-block" type="submit">Cambiar contraseña</button>
+      </div>
+    </form>
+    <hr>
+    <h4>Cambio de ubicación</h4>
+    <form class="form-signup" method="post">
+      {% csrf_token %}
+      <div class="col-sm-4">
+        <label>Establezca su nueva ubicación</label>
+        {% render_field ubus_form.latUb value="" %}
+        {% render_field ubus_form.lngUb value="" %}
+        {% include "gestionUsuarios/registerubication.html" %}
+        {% if ubus_form.errors %}
+        <small class="form-text text-muted" id="errorUb">
+           {% for error in ubus_form.latUb.errors %}
+           <p class="text-danger">{{ error }}</p>
+           {% endfor %}
+        </small>
+        {% endif %}
+        <br>
+        <button class="btn btn-lg btn-info btn-block" type="submit">Cambiar ubicación</button>
+      </div>
+    </form>
+  </div>
 </div>
+<br>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript" src="{% static "gestionUsuarios/js/jquery-3.4.1.min.js" %}"></script>
+<script type="text/javascript" src="{% static "gestionUsuarios/js/bootstrap.js" %}"></script>
+<script type="text/javascript" src="{% static "gestionUsuarios/js/popper.js" %}"></script>
+<script type="text/javascript" src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   crossorigin=""></script>
+{% endblock %}
+{% block extra_js %}
+<script type="text/javascript" src="{% static "gestionUsuarios/js/registerubication.js" %}"></script>
+<script type="text/javascript" src="{% static "gestionUsuarios/js/signupcounter.js" %}"></script>
+{% endblock %}
+{% block css %}
+<link href="{% static "gestionUsuarios/css/bootstrap.css" %}" rel="stylesheet">
+<link href="{% static "gestionUsuarios/css/base.css" %}" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin="" />
 {% endblock %}
