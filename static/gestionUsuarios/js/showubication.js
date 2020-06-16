@@ -4,7 +4,7 @@ initMap();
 
 
 function initMap() {
-	this.mymap = L.map('mapid', { zoomControl: false }).setView([$('#user_latUb').val(), $('#user_lngUb').val()], 13);
+	this.mymap = L.map('mapid', { zoomControl: false }).setView([parseFloat($('#user_latUb').val()), parseFloat($('#user_lngUb').val())], 13);
 	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
 		maxZoom: 18,
 		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
@@ -15,8 +15,8 @@ function initMap() {
 		zoomOffset: -1
 	}).addTo(mymap);
 
-	L.circle([$('#user_latUb').val(), $('#user_lngUb').val()], 2000)
-	.setLatLng([$('#user_latUb').val(), $('#user_lngUb').val()])
+	L.circle([parseFloat($('#user_latUb').val()), parseFloat($('#user_lngUb').val())], 2000)
+	.setLatLng([parseFloat($('#user_latUb').val()), parseFloat($('#user_lngUb').val())])
 	.bindPopup("El usuario está aquí con 2 kilometros de aproximacion")
 	.openPopup()
 	.addTo(mymap);
