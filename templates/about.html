@@ -76,7 +76,35 @@
             </p>
         </div>
     </div>
-</div>   
+</div>
+<hr>
+<div class="row">
+    <div class="col-lg-6">
+        <h2>Envío de sugerencias</h2>
+        <form method="post">
+            {% csrf_token %}
+            <textarea style="resize: none;" id="id_bio" name="sugerencia" cols="56" rows="3" maxlength="150" placeholder="Escriba su sugerencia aquí (min 30 letras; max 150 letras)" required></textarea>
+            <div class="word-counter">0/150</div>
+            <small class="form-text text-muted" id="helpSugerencia">
+                <p>Si tiene alguna sugerencia de cara a mejorar la aplicación, puede comentarla y enviarla aquí al desarrollador. Si se encuentra logueado se hará referencia a su autor.</p>
+            </small>
+            <button class="btn btn-lg btn-info btn-block" type="submit">Enviar sugerencia</button>
+            <br>
+            {% if suggestion == True %}
+            <div class="alert alert-success" role="alert">
+                <strong>¡Sugerencia enviada con éxito!</strong>
+                <p>Su sugerencia ha sido enviada con éxito, gracias por ayudarnos a mejorar la aplicación.</p>
+            </div>
+            {% endif %}
+            {% if suggestion == False %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Sugerencia no enviada</strong>
+                <p>Revise su sugerencia y pruebe a enviarla de nuevo. La sugerencia debe tener entre 30 o 150 caracteres y no debe ir vacía.</p>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
 <!-- Don't panic! 👍 -->
 <!-- |           |    -->
 <!--  |      |  |  -->
@@ -84,4 +112,7 @@
 <!-- ||||___ ||||_%%%_ -->
 <!-- \,-' '_|||||\___/  -->
 <!-- /""----'|||| -->
+{% endblock %}
+{% block extra_js %}
+<script type="text/javascript" src="{% static "gestionUsuarios/js/signupcounter.js" %}"></script>
 {% endblock %}

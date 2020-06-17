@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from gestionUsuarios.emails import activation_email, recovery_email
+from gestionUsuarios.emails import activation_email, recovery_email, suggestion_email
 from gestionUsuarios.tokens import account_token
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
@@ -24,9 +24,21 @@ def index(request):
 
 def about(request):
     """
-    Creará una respuesta al usuario mostrando la página de información de la aplicación.
+    Creará una respuesta al usuario mostrando la página de información de la aplicación y dejando al usuario o invitado enviar una sugerencia al desarrollador.
     """
-    return render(request,'about.html')
+
+    if request.method == 'POST':
+        suggestion = False
+
+        sugerencia = request.POST.get('sugerencia')
+
+        if len(sugerencia) >= 30 and len(sugerencia) <= 150:
+            suggestion_email(request, sugerencia) # Enviamos la sugerencia al correo del desarrollador.
+            suggestion = True
+        
+        return render(request,'about.html', {'suggestion': suggestion})
+    else:
+        return render(request,'about.html', {})
 
 # Vistas de gestión de creación o logueo del usuario
 
@@ -195,6 +207,8 @@ def user_login(request):
 def my_profile(request):
     """
     Renderizará el perfil del usuario, donde se darán opciones para editar datos.
+
+    TO DO
     """
 
     updated = False
@@ -205,7 +219,28 @@ def my_profile(request):
         usuarioinfo = None
     
     if request.method == 'POST':
-        pass
+        usuario_form = UsuarioForm(data=request.POST)
+        infous_form = UsuarioInfoForm(data=request.POST, files=request.FILES)
+        ubus_form = UsuarioUbicacionForm(data=request.POST)
+
+        if infous_form['fechaNacimiento']:
+            if not infous_form['fechaNacimiento'].errors:
+                pass
+        elif infous_form['avatar']:
+            if not infous_form['avatar'].errors:
+                pass
+        elif infous_form['bio']:
+            if not infous_form['bio'].errors:
+                pass
+        elif usuario_form['email']:
+            if not usuario_form['email'].errors:
+                pass
+        elif request.POST.get('passwordOld'):
+                pass
+        elif ubus_form['latUb'] and ubus_form['lngUb']:
+                pass
+        else:
+                pass
     else:
         usuario_form = UsuarioForm()
         infous_form = UsuarioInfoForm()

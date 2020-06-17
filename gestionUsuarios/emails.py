@@ -7,6 +7,29 @@ from gestionUsuarios.tokens import account_token
 
 # Fichero encargado de informar al usuario por medio de emails para distintos casos de uso
 
+def suggestion_email(request, suggestion):
+    """
+    Se encargará de enviar sugerencias por parte del usuario o el invitado al desarrollador. 
+    """
+
+    if request.user.is_authenticated:
+        autor = request.user.username
+        mail_subject = 'Sugerencia del usuario ' + autor +' para el desarrollador'
+    else:
+        mail_subject = 'Sugerencia anónima para el desarrollador'
+        autor = 'anónimo'
+    
+    message = render_to_string('gestionUsuarios/email/email_suggestion.html', {
+        'autor': autor,
+        'suggestion': suggestion
+    })
+    to_email = 'fostergun123@gmail.com'
+    email = EmailMessage(
+                mail_subject, message, to=[to_email]
+    )
+    email.content_subtype = "html" # Especificamos que el correo eléctronico se envíe en modo html para que respete el cuerpo del mensaje que le hemos asignado
+    email.send()
+
 def activation_email(request, usuario, usuario_form):
     """
     Se encargará de enviar un email de activación de la cuenta para el usuario.
