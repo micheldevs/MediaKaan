@@ -152,6 +152,9 @@ def my_articles(request):
     """
 
     try:
+        if request.method == "POST":
+            print(request.POST.get('eliminar'))
+            print(request.POST.get('asignar'))
         articulos = Media.objects.filter(propietario=request.user)
     except:
         articulos = None
