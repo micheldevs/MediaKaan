@@ -1,0 +1,98 @@
+{% extends "gestionUsuarios/base.html" %}
+{% block title %} MediaKaanª | Añadir artículo {% endblock %}
+{% load static %}
+{% load widget_tweaks %}
+{% block body_block %}
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item waves-effect waves-light">
+                <a class="nav-link" href="{% url 'gestionArticulos:add_article' %}"><span
+                        class="glyphicon">&#x2b;</span> Añadir artículo</a>
+            </li>
+            <li class="nav-item waves-effect waves-light">
+                <a class="nav-link" href="{% url 'gestionUsuarios:my_profile' %}">Mi perfil</a>
+            </li>
+            <li class="nav-item waves-effect waves-light">
+                <a class="nav-link active" href="{% url 'gestionArticulos:my_articles' %}">Mis artículos</a>
+            </li>
+            <li class="nav-item waves-effect waves-light">
+                <a class="nav-link" href="{% url 'gestionUsuarios:delete_user' %}">Eliminar perfil</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <h4 class="card-title">Mis artículos</h4>
+        <p>En esta página se muestran listados los artículos del usuario, el cual podrá editarlos, asignarlos o borrarlos según como desee.</p>
+        <hr>
+        <div class="container">
+            {% if not articulos %}
+            <div class="row justify-content-center">
+                <div class="col-6 text-center">
+                    <p>Aún no tienes artículos registrados, registra uno aquí.</p>
+                    <a class="btn btn-success" href="{% url 'gestionArticulos:add_article' %}" role="button">Registrar artículo</a>
+                </div>
+            </div>
+            {% else %}
+            {% for articulo in articulos %}
+            <div class="row">
+                <div class="col-12 col-lg-4 col-md-6 text-center">
+                    <img class="rounded" src="{% get_media_prefix %}{{articulo.fotoart}}"
+                        height="335" width="195">
+                    <br>
+                    <br>
+                    <a class="btn btn-success" href="#" style="background-color: #45a3a0; border-color: #45a3a0;" role="button">Editar artículo</a>
+                    <small class="form-text text-muted">
+                        <p>Le redirigirá a la página de edición de artículos.</p>
+                    </small>
+                </div>
+                <div class="col-12 col-lg-8 col-md-6">
+                    <a href="{% url 'gestionArticulos:art' %}?id={{articulo.media_id}}"><h3 class="mb-0 text-truncated">{{articulo.nombre}}</h3></a>
+                    <h5>{{articulo.categoria_text}}</h5>
+                    <p>
+                        {{articulo.descripcion}}
+                    </p>
+                    {% if articulo.accion == "INTERCAMBIO" %}
+                    <span class="badge badge-pill badge-info">{{articulo.accion}}</span>
+                    {% elif articulo.accion == "DONO" %}
+                    <span class="badge badge-pill badge-success">{{articulo.accion}}</span>
+                    {% else %}
+                    <span class="badge badge-pill badge-primary">{{articulo.accion}}</span>
+                    {% endif %}
+                    <small>
+                        {% for tag in articulo.tags.all %}
+                        <a href="{% url 'gestionArticulos:artresults' %}?consulta={{tag.name}},&categoria=Todas">
+                            <label class="text-muted">#{{tag.name}}</label>
+                        </a>
+                        {% endfor %}
+                    </small>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input class="form-control" type="text" name="asignado" placeholder="Usuario asignado">
+                                <span class="input-group-append">
+                                   <button type="submit" name="asignar" value="{{articulo.media_id}}" class="btn btn-success">Asignar artículo</button>
+                                </span>
+                            </div>
+                            <small class="form-text text-muted">
+                                <p>Escriba aquí el nombre del usuario al que desea asignar el artículo.</p>
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" name="eliminar" value="{{articulo.media_id}}" class="btn btn-danger">&#10060; Eliminar artículo</button>
+                            <small class="form-text text-muted">
+                                <p>Esta acción no se puede deshacer.</p>
+                            </small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <hr>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+<br>
+{% endblock %}

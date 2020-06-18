@@ -144,3 +144,16 @@ def add_article(request):
     return render(request, 'gestionArticulos/addarticle.html', {'media_form': media_form,
                                                                 'tagserror': tagserror,
                                                                 'registered': registered})
+
+@login_required
+def my_articles(request):
+    """
+    Devolverá al usuario una plantilla con sus artículos.
+    """
+
+    try:
+        articulos = Media.objects.filter(propietario=request.user)
+    except:
+        articulos = None
+
+    return render(request, 'gestionArticulos/myarticles.html', {'articulos': articulos})
