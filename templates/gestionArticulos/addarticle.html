@@ -1,0 +1,152 @@
+{% extends "gestionUsuarios/base.html" %}
+{% block title %} MediaKaanª | Añadir artículo {% endblock %}
+{% load static %}
+{% load widget_tweaks %}
+{% block body_block %}
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item waves-effect waves-light">
+                <a class="nav-link active" href="{% url 'gestionArticulos:add_article' %}"><span
+                        class="glyphicon">&#x2b;</span> Añadir artículo</a>
+            </li>
+            <li class="nav-item waves-effect waves-light">
+                <a class="nav-link" href="{% url 'gestionUsuarios:my_profile' %}">Mi perfil</a>
+            </li>
+            <li class="nav-item waves-effect waves-light">
+                <a class="nav-link" href="#">Mis artículos</a>
+            </li>
+            <li class="nav-item waves-effect waves-light">
+                <a class="nav-link" href="{% url 'gestionUsuarios:delete_user' %}">Eliminar perfil</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <h4 class="card-title">Registrar artículo</h4>
+        <p>En este sitio podrá registrar aquellos artículos que desee pone en la plataforma para relacionarse con los
+            demás.</p>
+        <hr>
+        {% if registered %}
+        <div class="alert alert-success alert-dismissible">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <strong>¡Artículo añadido con éxito!</strong> Su artículo se ha añadido de manera satisfactoria.
+        </div>
+        {% endif %}
+        <form enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <label for="id_nombre">Nombre del artículo <strong style="color: red;">*</strong></label>
+                    {% if media_form.nombre.errors %}
+                    {% render_field media_form.nombre class="form-control is-invalid" placeholder="Escriba el nombre del artículo" required="" %}
+                    {% else %}
+                    {% render_field media_form.nombre class="form-control" placeholder="Escriba el nombre del artículo" required="" %}
+                    {% endif %}
+                    <small class="form-text text-muted" id="helpnombre">
+                        {{ media_form.nombre.help_text }}
+                    </small>
+                    {% if media_form.nombre.errors %}
+                    <small class="form-text text-muted" id="errornombre">
+                        {% for error in media_form.nombre.errors %}
+                        <p class="text-danger">{{ error }}</p>
+                        {% endfor %}
+                    </small>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <label for="id_descripcion">Descripción del artículo <strong style="color: red;">*</strong></label>
+                    {% if media_form.descripcion.errors %}
+                    {% render_field media_form.descripcion style="resize: none;" class="form-control is-invalid" rows="3" maxlength="240" placeholder="Escriba la descripción del artículo (240 letras máximo; 120 letras mínimo)" required="" %}
+                    {% else %}
+                    {% render_field media_form.descripcion style="resize: none;" class="form-control" rows="3" maxlength="240" placeholder="Escriba la descripción del artículo (240 letras máximo; 120 letras mínimo)" required="" %}
+                    {% endif %}
+                    <div class="word-counter">0/240</div>
+                    <small class="form-text text-muted" id="helpdescripcion">
+                        {{ media_form.descripcion.help_text }}
+                    </small>
+                    {% if media_form.descripcion.errors %}
+                    <small class="form-text text-muted" id="errordescripcion">
+                        {% for error in media_form.descripcion.errors %}
+                        <p class="text-danger">{{ error }}</p>
+                        {% endfor %}
+                    </small>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <label for="id_fotoart">Foto del artículo <strong style="color: red;">*</strong></label>
+                    <div class="custom-file">
+                        <label class="custom-file-label" for="id_fotoart">Seleccione la foto del artículo...</label>
+                        {% if media_form.fotoart.errors %}
+                        {% render_field media_form.fotoart class="custom-file-input is-invalid" required="" %}
+                        <small class="form-text text-muted" id="helpFotoart">
+                            {{ media_form.fotoart.help_text }}
+                        </small>
+                        <small class="form-text text-muted" id="errorFotoart">
+                            {% for error in media_form.fotoart.errors %}
+                            <p class="text-danger">{{ error }}</p>
+                            {% endfor %}
+                        </small>
+                        {% else %}
+                        {% render_field media_form.fotoart class="custom-file-input" required="" %}
+                        <small class="form-text text-muted" id="helpFotoart">
+                            {{ media_form.fotoart.help_text }}
+                        </small>
+                        {% endif %}
+                    </div>
+                    <p>Preview: </p>
+                    <img id="output_fotoart" height="235" width="135"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <label for="id_accion">Acción del artículo <strong style="color: red;">*</strong></label>
+                    {% render_field media_form.accion class="form-control" required="" %}
+                    <small class="form-text text-muted" id="helpaccion">
+                        {{ media_form.accion.help_text }}
+                    </small>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <label for="id_accion">Categoría del artículo <strong style="color: red;">*</strong></label>
+                    {% render_field media_form.categoria class="form-control" required="" %}
+                    <small class="form-text text-muted" id="helpcategoria">
+                        {{ media_form.categoria.help_text }}
+                    </small>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <label for="id_tags">Tags del artículo <strong style="color: red;">*</strong></label>
+                    <textarea style="resize: none;" class="form-control {% if tagserror == True %}is-invalid{% endif %}" rows="3" maxlength="159" name="id_tags" placeholder="Escriba los tags aquí separados por comas (Ej: comedia,ciencia ficción,terror...)"></textarea>
+                    <small class="form-text text-muted" id="helptags">
+                        <p>Los tags del artículo servirán para filtrar las búsquedas de forma más eficiente,
+                           estas son palabras claves con las que los demás usuarios buscarán el artículo.
+                           Escriba como máximo 10 tags para el artículo con 15 caracteres cada uno como máximo
+                           separados por comas.</p>
+                    </small>
+                    {% if tagserror == True %}
+                    <small class="form-text text-muted" id="errortags">
+                        <p class="text-danger">Los tags deben estar separados por comas, tener como máximo 15 caracteres cada uno y ser como máximo 10 por artículo.</p>
+                    </small>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <button class="btn btn-lg btn-success btn-block" type="submit"><span class="glyphicon">&#x2b;</span>
+                        Registrar artículo</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<br>
+{% endblock %}
+{% block extra_js %}
+<script type="text/javascript" src="{% static "gestionArticulos/js/componentsutils.js" %}"></script>
+{% endblock %}

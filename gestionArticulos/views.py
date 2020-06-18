@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from gestionArticulos.models import Media
+from django.contrib.auth.decorators import login_required
+from gestionArticulos.models import Media, Tag
 from gestionUsuarios.models import UsuarioInfo, UsuarioUbicacion
+from gestionArticulos.forms import MediaForm
 from gestionArticulos.enums import CategoriaType
 
 # Create your views here.
 # Las vistas se encargarán de gestionar las peticiones y las respuestas de las páginas web de la aplicación.
-
 
 def articles_results(request):
     """
@@ -73,7 +74,6 @@ def articles_results(request):
                                                               'n_articulos': n_articulos,
                                                               'articulos': articulos})
 
-
 def article(request):
     """
     Devolverá al usuario el artículo consultado con información del propietario y su ubicación.
@@ -92,3 +92,55 @@ def article(request):
                 usuarioub = UsuarioUbicacion.objects.filter(usuario=articulo[0].propietario)
 
     return render(request, 'gestionArticulos/article.html', {'articulo': articulo, 'usuarioinfo': usuarioinfo, 'usuarioub': usuarioub})
+
+@login_required
+def add_article(request):
+    """
+    Devolverá al usuario una plantilla donde registrar el artículo que desea añadir.
+    """
+
+    tagserror = False
+    registered = False
+    if request.method == 'POST':
+        media_form = MediaForm(data=request.POST, files=request.FILES)
+
+        tags = request.POST.get('id_tags')
+
+        if len(tags) <= 159: # Número de caracteres máximos con tags con comas incluídas.
+            tag_list = tags.split(',') # Separamos por coma los tags introducidos por el usuario y los metemos en una lista.
+
+            # Comprobamos que haya como máximo 10 tags con 15 caracteres cada uno como máximo.
+            if len(tag_list) <= 10:
+                for tagname in tag_list:
+                    if len(tagname) > 15:
+                        tagserror = True
+            else:
+                tagserror = True
+        else:
+            tagserror = True
+        
+        # Comprobamos que el formulario está libre de errores
+        if media_form.is_valid() and not tagserror:
+            # Creación del artículo
+            media = media_form.save(commit=False)
+            media.propietario = request.user
+            media.avatar = request.FILES['fotoart']
+            media.save()
+
+            # Tratamiento de los tags
+            for tagname in tag_list:
+                if Tag.objects.get(name=tagname): # Comprobamos si ya existe el tag que se quiere añadir y si no existe lo creamos.
+                    tag = Tag.objects.get(name=tagname)
+                else:
+                    tag = Tag.objects.create(name=tagname)
+
+                media.tags.add(tag)
+            
+            media.save()
+            registered = True # Guardamos el artículo en la base de datos e informamos al usuario de que la operación se ha completado con éxito
+    else:
+        media_form = MediaForm()
+
+    return render(request, 'gestionArticulos/addarticle.html', {'media_form': media_form,
+                                                                'tagserror': tagserror,
+                                                                'registered': registered})

@@ -72,14 +72,12 @@ def register(request):
             usuario.save()
 
             # Creación del perfil de información del usuario
-            print('Peta1')
             infous = infous_form.save(commit=False)
             infous.usuario = usuario
             infous.avatar = request.FILES['avatar']
             infous.save()
 
             # Creación de la ubicación del usuario
-            print('Peta2')
             ubus = ubus_form.save(commit=False)
             ubus.usuario = usuario
             ubus.save()

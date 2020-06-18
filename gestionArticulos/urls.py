@@ -5,5 +5,6 @@ app_name = 'gestionArticulos'
 
 urlpatterns = [
     url(r'^resultados/$', views.articles_results, name='artresults'),
-    url(r'^articulo/$', views.article, name='art')
+    url(r'^articulo/$', views.article, name='art'),
+    url(r'^registrararticulo/$', views.add_article, name='add_article')
 ]
