@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from gestionArticulos.models import Media, Tag
-from gestionUsuarios.models import UsuarioInfo, UsuarioUbicacion
+from gestionUsuarios.models import User, UsuarioInfo, UsuarioUbicacion
 from gestionArticulos.forms import MediaForm
 from gestionArticulos.enums import CategoriaType
 
@@ -38,14 +38,14 @@ def articles_results(request):
 
             if categoria != "Todas":  # Filtramos por categoría.
                 if ',' in consulta:  # Si se encuentran comas en la consulta, la búsqueda será por tags.
-                    articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, tags__name__in=taglist)
+                    articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, tags__name__in=taglist, asignado=None)
                 else:
-                    articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, nombre__icontains=consulta)
+                    articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, nombre__icontains=consulta, asignado=None)
             else:
                 if ',' in consulta:
-                    articulos = Media.objects.filter(tags__name__in=taglist)
+                    articulos = Media.objects.filter(tags__name__in=taglist, asignado=None)
                 else:
-                    articulos = Media.objects.filter(nombre__icontains=consulta)
+                    articulos = Media.objects.filter(nombre__icontains=consulta, asignado=None)
 
             # Gestionamos las páginas y los resultados a mostrar en esta
             n_articulos = articulos.count()
@@ -85,11 +85,16 @@ def article(request):
         usuarioinfo = None
         usuarioub = None
 
-        if id:
-            articulo = Media.objects.filter(media_id=id)
-            if articulo:
-                usuarioinfo = UsuarioInfo.objects.filter(usuario=articulo[0].propietario)
-                usuarioub = UsuarioUbicacion.objects.filter(usuario=articulo[0].propietario)
+        try:
+            if id:
+                articulo = Media.objects.get(media_id=id, asignado=None)
+                if articulo:
+                    usuarioinfo = UsuarioInfo.objects.get(usuario=articulo.propietario)
+                    usuarioub = UsuarioUbicacion.objects.get(usuario=articulo.propietario)
+        except:
+            articulo = None
+            usuarioinfo = None
+            usuarioub = None
 
     return render(request, 'gestionArticulos/article.html', {'articulo': articulo, 'usuarioinfo': usuarioinfo, 'usuarioub': usuarioub})
 
@@ -148,15 +153,45 @@ def add_article(request):
 @login_required
 def my_articles(request):
     """
-    Devolverá al usuario una plantilla con sus artículos.
+    Devolverá al usuario una plantilla con sus artículos y le dejará borrarlos o asignarlos.
     """
 
-    try:
-        if request.method == "POST":
-            print(request.POST.get('eliminar'))
-            print(request.POST.get('asignar'))
+    borrado = None
+    asignado = None
+    erroras = False
+    if request.method == "POST":
+        articulo = None
+
+        if request.POST.get('eliminar'):
+            try:
+                id = request.POST.get('eliminar')
+                articulo = Media.objects.get(media_id=id, propietario=request.user) # Comprobamos que el usuario es dueño del artículo que desea borrar identificado con su id correspondiente.
+                if articulo:
+                    borrado = articulo.nombre
+                    articulo.delete()
+            except:
+                articulo = None
+        else:
+            if request.POST.get('asignar') and request.POST.get('asignado'):
+                try:
+                    id = request.POST.get('asignar')
+                    us_asignado = User.objects.get(username=request.POST.get('asignado'))
+
+                    if us_asignado != request.user: # Evitamos que el usuario se lo asigne a sí mismo.
+                        articulo = Media.objects.get(media_id=id, propietario=request.user, asignado=None)
+                        articulo.asignado = us_asignado
+                        asignado = us_asignado.username
+                        articulo.save()
+                    else:
+                        erroras = True
+                except:
+                    erroras = True
+            else:
+                erroras = True
+
+    if Media.objects.filter(propietario=request.user).exists():
         articulos = Media.objects.filter(propietario=request.user)
-    except:
+    else:
         articulos = None
 
-    return render(request, 'gestionArticulos/myarticles.html', {'articulos': articulos})
+    return render(request, 'gestionArticulos/myarticles.html', {'articulos': articulos, 'borrado': borrado, 'asignado': asignado, 'erroras': erroras})

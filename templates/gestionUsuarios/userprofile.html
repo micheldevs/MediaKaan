@@ -7,10 +7,13 @@
   <div class="card-header">
     <ul class="nav nav-tabs card-header-tabs">
       <li class="nav-item waves-effect waves-light">
+        <a class="nav-link" href="{% url 'gestionArticulos:add_article' %}"><span class="glyphicon">&#x2b;</span> Añadir artículo</a>
+      </li>
+      <li class="nav-item waves-effect waves-light">
         <a class="nav-link active" href="{% url 'gestionUsuarios:my_profile' %}">Mi perfil</a>
       </li>
       <li class="nav-item waves-effect waves-light">
-        <a class="nav-link" href="#">Mis artículos</a>
+        <a class="nav-link" href="{% url 'gestionArticulos:my_articles' %}">Mis artículos</a>
       </li>
       <li class="nav-item waves-effect waves-light">
         <a class="nav-link" href="{% url 'gestionUsuarios:delete_user' %}">Eliminar perfil</a>
@@ -46,7 +49,7 @@
       {% csrf_token %}
       <div class="col-sm-4">
         <label for="id_fechaNacimiento">Nueva fecha de nacimiento</label>
-        {% if infous_form.fechaNacimiento.errors %}
+        {% if fieldUp.0 and infous_form.fechaNacimiento.errors %}
         {% render_field infous_form.fechaNacimiento type="date" class="form-control  is-invalid" required="" %}
         <small class="form-text text-muted" id="helpfechaNacimiento">
            {{ infous_form.fechaNacimiento.help_text }}
@@ -68,13 +71,13 @@
     </form>
     <hr>
     <h4>Cambiar foto de perfil</h4>
-    <form class="form-signup" method="post">
+    <form class="form-signup" enctype="multipart/form-data" method="post">
       {% csrf_token %}
       <div class="col-sm-4">
         <label for=id_avatar>Seleccione su nuevo avatar</label>
         <div class="custom-file">
            <label class="custom-file-label" for="id_avatar">Seleccione su foto de usuario...</label>
-           {% if infous_form.avatar.errors %}
+           {% if fieldUp.1 and infous_form.avatar.errors %}
            {% render_field infous_form.avatar class="custom-file-input is-invalid" required="" %}
            <small class="form-text text-muted" id="helpAvatar">
               {{ infous_form.avatar.help_text }}
@@ -91,7 +94,7 @@
            </small>
            {% endif %}
         </div>
-        <button class="btn btn-lg btn-info btn-block" type="submit">Cambiar avatar</button>
+        <button class="btn btn-lg btn-info btn-block" name="avatarSub" type="submit">Cambiar avatar</button>
       </div>
     </form>
     <hr>
@@ -100,7 +103,7 @@
       {% csrf_token %}
       <div class="col-sm-6">
         <label for="id_bio">Escriba su nueva biografía</label>
-        {% if infous_form.bio.errors %}
+        {% if fieldUp.2 and infous_form.bio.errors %}
         {% render_field infous_form.bio class="form-control is-invalid" style="resize: none;" rows="3" maxlength="150" placeholder="Escriba su biografía de perfil (150 letras máximo; 100 letras mínimo)" required="" %}
         <div class="word-counter">0/150</div>
         <small class="form-text text-muted" id="errorBio">
@@ -109,7 +112,7 @@
           {% endfor %}
         </small>
         {% else %}
-        {% render_field infous_form.bio class="form-control" rows="3" maxlength="150" placeholder="Escriba su biografía de perfil (150 letras máximo; 100 letras mínimo)" required="" %}
+        {% render_field infous_form.bio class="form-control" style="resize: none;" rows="3" maxlength="150" placeholder="Escriba su biografía de perfil (150 letras máximo; 100 letras mínimo)" required="" %}
         <div class="word-counter">0/150</div>
         {% endif %}
         <br>
@@ -133,10 +136,15 @@
       {% csrf_token %}
       <div class="col-sm-4">
         <label for="id_password">Escriba su nueva contraseña</label>
-        <input type="text" id="inputPassOld" name="passwordOld" class="form-control" placeholder="Antigua contraseña"
+        <input type="password" id="inputPassOld" name="passwordOld" class="form-control {% if oldPassEr %}is-invalid{% endif %}" placeholder="Antigua contraseña"
           required>
+        {% if oldPassEr %}
+        <small class="form-text text-muted" id="errorOldPassword">
+          <p class="text-danger">La contraseña antigua es incorrecta.</p>
+        </small>
+        {% endif %}
         <br>
-        {% if usuario_form.password.errors %}
+        {% if fieldUp.4 and usuario_form.password.errors %}
         {% render_field usuario_form.password class="form-control is-invalid" placeholder="Nueva contraseña" required="" %}
         {% else %}
         {% render_field usuario_form.password class="form-control" placeholder="Nueva contraseña" required="" %}
@@ -144,21 +152,25 @@
         <small class="form-text text-muted" id="helpPassword">
           {{ usuario_form.password.help_text }}
         </small>
+        {% if fieldUp.4 and usuario_form.password.errors %}
         <small class="form-text text-muted" id="errorPassword">
           {% for error in usuario_form.password.errors %}
           <p class="text-danger">{{ error }}</p>
           {% endfor %}
         </small>
-        {% if usuario_form.passwordRep.errors %}
+        {% endif %}
+        {% if fieldUp.4 and usuario_form.passwordRep.errors %}
         {% render_field usuario_form.passwordRep class="form-control is-invalid" placeholder="Repita su nueva contraseña" required="" %}
         {% else %}
         {% render_field usuario_form.passwordRep class="form-control" placeholder="Repita su nueva contraseña" required="" %}
         {% endif %}
+        {% if fieldUp.4 and usuario_form.passwordRep.errors %}
         <small class="form-text text-muted" id="errorPasswordRep">
           {% for error in usuario_form.passwordRep.errors %}
           <p class="text-danger">{{ error }}</p>
           {% endfor %}
         </small>
+        {% endif %}
         <br>
         <button class="btn btn-lg btn-info btn-block" type="submit">Cambiar contraseña</button>
       </div>
@@ -172,7 +184,7 @@
         {% render_field ubus_form.latUb value="" %}
         {% render_field ubus_form.lngUb value="" %}
         {% include "gestionUsuarios/registerubication.html" %}
-        {% if ubus_form.errors %}
+        {% if fieldUp.5 and ubus_form.lngUb.is_bound and ubus_form.errors %}
         <small class="form-text text-muted" id="errorUb">
            {% for error in ubus_form.latUb.errors %}
            <p class="text-danger">{{ error }}</p>
@@ -187,22 +199,15 @@
 </div>
 <br>
 {% endblock %}
-{% block javascript %}
-<script type="text/javascript" src="{% static "gestionUsuarios/js/jquery-3.4.1.min.js" %}"></script>
-<script type="text/javascript" src="{% static "gestionUsuarios/js/bootstrap.js" %}"></script>
-<script type="text/javascript" src="{% static "gestionUsuarios/js/popper.js" %}"></script>
-<script type="text/javascript" src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-   crossorigin=""></script>
-{% endblock %}
-{% block extra_js %}
-<script type="text/javascript" src="{% static "gestionUsuarios/js/registerubication.js" %}"></script>
-<script type="text/javascript" src="{% static "gestionUsuarios/js/signupcounter.js" %}"></script>
-{% endblock %}
-{% block css %}
-<link href="{% static "gestionUsuarios/css/bootstrap.css" %}" rel="stylesheet">
-<link href="{% static "gestionUsuarios/css/base.css" %}" rel="stylesheet">
+{% block extra_css %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
    crossorigin="" />
+{% endblock %}
+{% block extra_js %}
+<script type="text/javascript" src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   crossorigin=""></script>
+<script type="text/javascript" src="{% static "gestionUsuarios/js/registerubication.js" %}"></script>
+<script type="text/javascript" src="{% static "gestionUsuarios/js/signupcounter.js" %}"></script>
 {% endblock %}

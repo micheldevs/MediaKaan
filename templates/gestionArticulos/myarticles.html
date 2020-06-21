@@ -24,6 +24,25 @@
     <div class="card-body">
         <h4 class="card-title">Mis artículos</h4>
         <p>En esta página se muestran listados los artículos del usuario, el cual podrá editarlos, asignarlos o borrarlos según como desee.</p>
+        {% if borrado %}
+        <div class="alert alert-success alert-dismissible">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <p>El artículo <strong>{{borrado}}</strong> ha sido eliminado correctamente.</p>
+        </div>
+        {% endif %}
+        {% if asignado %}
+        <div class="alert alert-success alert-dismissible">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <p>El artículo se ha asignado exitosamente al usuario <strong>{{asignado}}</strong></p>
+        </div>
+        {% endif %}
+        {% if erroras %}
+        <div class="alert alert-danger alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>El artículo no se ha asignado al usuario correctamente.</strong> 
+            <p>Revise el nombre del usuario al que desea asignar el artículo.</p>
+        </div>
+        {% endif %}
         <hr>
         <div class="container">
             {% if not articulos %}
@@ -68,6 +87,11 @@
                     </small>
                     <form method="post">
                         {% csrf_token %}
+                        {% if articulo.asignado %}
+                        <p class="font-italic">
+                            Artículo asignado a: <a href="#">{{articulo.asignado.username}}</a>
+                        </p>
+                        {% else %}
                         <div class="form-group">
                             <div class="input-group">
                                 <input class="form-control" type="text" name="asignado" placeholder="Usuario asignado">
@@ -79,6 +103,7 @@
                                 <p>Escriba aquí el nombre del usuario al que desea asignar el artículo.</p>
                             </small>
                         </div>
+                        {% endif %}
                         <div class="form-group">
                             <button type="submit" name="eliminar" value="{{articulo.media_id}}" class="btn btn-danger">&#10060; Eliminar artículo</button>
                             <small class="form-text text-muted">

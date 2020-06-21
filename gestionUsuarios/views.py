@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from gestionUsuarios.forms import UsuarioForm, UsuarioInfoForm, UsuarioUbicacionForm
-from gestionUsuarios.models import User, UsuarioInfo
+from gestionUsuarios.models import User, UsuarioInfo, UsuarioUbicacion
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -91,7 +91,7 @@ def register(request):
     else:
         usuario_form = UsuarioForm()
         infous_form = UsuarioInfoForm()
-        ubus_form = UsuarioUbicacionForm(data=request.POST)
+        ubus_form = UsuarioUbicacionForm()
     
     return render(request,'gestionUsuarios/signup.html',
                           {'usuario_form': usuario_form,
@@ -205,12 +205,11 @@ def user_login(request):
 def my_profile(request):
     """
     Renderizará el perfil del usuario, donde se darán opciones para editar datos.
-
-    TO DO
     """
 
     updated = False
-
+    fieldUp = [False]*6
+    oldPassEr = False
     try:
         usuarioinfo = UsuarioInfo.objects.get(usuario=request.user)
     except:
@@ -221,28 +220,51 @@ def my_profile(request):
         infous_form = UsuarioInfoForm(data=request.POST, files=request.FILES)
         ubus_form = UsuarioUbicacionForm(data=request.POST)
 
-        if infous_form['fechaNacimiento']:
+        if infous_form['fechaNacimiento'].value(): # fieldUp 0 - Fecha de nacimiento cambiada
+            fieldUp[0] = True
             if not infous_form['fechaNacimiento'].errors:
-                pass
-        elif infous_form['avatar']:
+                usuarioinfo.fechaNacimiento = infous_form['fechaNacimiento'].value()
+                updated = True
+        elif infous_form['avatar'].value(): # fieldUp 1 - Avatar cambiado
+            fieldUp[1] = True
             if not infous_form['avatar'].errors:
-                pass
-        elif infous_form['bio']:
+                usuarioinfo.avatar = request.FILES['avatar']
+                updated = True
+        elif infous_form['bio'].value(): # fieldUp 2 - Bio cambiada
+            fieldUp[2] = True
             if not infous_form['bio'].errors:
-                pass
-        elif usuario_form['email']:
+                usuarioinfo.bio = infous_form['bio'].value()
+                updated = True
+        elif usuario_form['email'].value(): # fieldUp 3 - Email cambiado
+            fieldUp[3] = True
             if not usuario_form['email'].errors:
-                pass
-        elif request.POST.get('passwordOld'):
-                pass
-        elif ubus_form['latUb'] and ubus_form['lngUb']:
-                pass
-        else:
-                pass
+               request.user.email = usuario_form['email'].value()
+               updated = True
+        elif request.POST.get('passwordOld'): # fieldUp 4 - Contraseña cambiada
+            fieldUp[4] = True
+            if authenticate(username=request.user.username, password=request.POST.get('passwordOld')):
+                if not usuario_form['password'].errors and not usuario_form['passwordRep'].errors:
+                    request.user.set_password(usuario_form['password'].value())
+                    updated = True
+            else:
+                oldPassEr = True
+        elif ubus_form['latUb'].value() and ubus_form['lngUb'].value(): # fieldUp 5 - Ubicación cambiada
+            fieldUp[5] = True
+            if not ubus_form['latUb'].errors:
+                usuarioub = UsuarioUbicacion.objects.get(usuario=request.user)
+                usuarioub.latUb = ubus_form['latUb'].value()
+                usuarioub.lngUb = ubus_form['lngUb'].value()
+                usuarioub.save()
+                updated = True
+
+        if updated:
+            request.user.save()
+            usuarioinfo.save()
+
     else:
         usuario_form = UsuarioForm()
         infous_form = UsuarioInfoForm()
-        ubus_form = UsuarioUbicacionForm(data=request.POST)
+        ubus_form = UsuarioUbicacionForm()
 
 
     return render(request, 'gestionUsuarios/userprofile.html',
@@ -250,7 +272,9 @@ def my_profile(request):
                         'usuario_form': usuario_form,
                         'infous_form': infous_form,
                         'ubus_form': ubus_form,
-                        'updated': updated})
+                        'updated': updated,
+                        'fieldUp': fieldUp,
+                        'oldPassEr': oldPassEr})
 
 @login_required
 def delete_user(request):
@@ -260,15 +284,18 @@ def delete_user(request):
     
     delerror = False
     if request.method == 'POST':
-        password = request.POST.get('password')
+        try:
+            password = request.POST.get('password')
 
-        usuario = authenticate(username=request.user.username, password=password)
+            usuario = authenticate(username=request.user.username, password=password)
 
-        if usuario:
-            usuario.delete()
-            logout(request)
-            return HttpResponseRedirect(reverse('index'))
-        else:
+            if usuario:
+                usuario.delete()
+                logout(request)
+                return HttpResponseRedirect(reverse('index'))
+            else:
+                delerror = True
+        except:
             delerror = True
 
 

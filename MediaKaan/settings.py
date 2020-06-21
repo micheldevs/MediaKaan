@@ -136,7 +136,7 @@ STATICFILES_DIRS = [STATIC_DIR,]
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
 
-LOGIN_URL = '/gestionUsuarios/user_login/'
+LOGIN_URL = '/gestionUsuarios/iniciosesion/'
 
 # Para informar a través de los email
 EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
