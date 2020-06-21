@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^articulo/$', views.article, name='art'),
     url(r'^registrararticulo/$', views.add_article, name='add_article'),
     url(r'^misarticulos/$', views.my_articles, name='my_articles'),    
+    url(r'^articulosrecibidos/$', views.rec_articles, name='rec_articles'),    
 ]

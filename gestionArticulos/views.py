@@ -195,3 +195,16 @@ def my_articles(request):
         articulos = None
 
     return render(request, 'gestionArticulos/myarticles.html', {'articulos': articulos, 'borrado': borrado, 'asignado': asignado, 'erroras': erroras})
+
+@login_required
+def rec_articles(request):
+    """
+    Devolverá al usuario una plantilla con los artículos que ha obtenido de otras personas.
+    """
+
+    if Media.objects.filter(asignado=request.user).exists():
+        articulos = Media.objects.filter(asignado=request.user)
+    else:
+        articulos = None
+
+    return render(request, 'gestionArticulos/recarticles.html', {'articulos': articulos})

@@ -1,5 +1,5 @@
 {% extends "gestionUsuarios/base.html" %}
-{% block title %} MediaKaanª | Añadir artículo {% endblock %}
+{% block title %} MediaKaanª | Mis artículos {% endblock %}
 {% load static %}
 {% load widget_tweaks %}
 {% block body_block %}
@@ -23,7 +23,8 @@
     </div>
     <div class="card-body">
         <h4 class="card-title">Mis artículos</h4>
-        <p>En esta página se muestran listados los artículos del usuario, el cual podrá editarlos, asignarlos o borrarlos según como desee.</p>
+        <p>En esta página se muestran listados los artículos que ha obtenido o subido el usuario, el cual podrá editarlos, asignarlos o borrarlos según como desee.</p>
+        <h5>Subidos / <a href="{% url 'gestionArticulos:rec_articles' %}">Recibidos</a></h5>
         {% if borrado %}
         <div class="alert alert-success alert-dismissible">
           <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
