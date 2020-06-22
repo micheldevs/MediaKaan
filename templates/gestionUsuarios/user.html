@@ -1,0 +1,118 @@
+{% extends "gestionUsuarios/base.html" %}
+{% block title %} MediaKaanª | Usuario {{usuarioinfo.usuario.username}} {% endblock %}
+{% load static %}
+{% block body_block %}
+<div class="row" style="padding-bottom: 5%;">
+    <a href="javascript:history.back()" style="color: gray;">← Volver atrás</a>
+</div>
+{% if usuarioinfo and usuarioub %}
+<div class="row" style="padding-bottom: 5%;">
+    <div class="col-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-lg-8 col-md-6">
+                        <h3 class="mb-0 text-truncated">Artículo de: {{usuarioinfo.usuario.username}}</h3>
+                        <p>
+                            {{usuarioinfo.bio}}
+                        </p>
+                        <p class="font-italic">
+                            El usuario se unió el {{usuarioinfo.usuario.date_joined}}
+                        </p>
+                        <p>
+                            {% if usuarioinfo.valoracion > 0 %}
+                            <span class="glyphicon">☆</span> {{usuarioinfo.valoracion}} / {{usuarioinfo.n_valoraciones}} valoraciones recibidas
+                            {% else %}
+                            <span class="glyphicon">★</span> {{usuarioinfo.valoracion}} / {{usuarioinfo.n_valoraciones}} valoraciones recibidas
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-12 col-lg-4 col-md-6 text-center">
+                        <img class="rounded-circle border" src="{% get_media_prefix %}{{usuarioinfo.avatar}}"
+                            width="140" height="140">
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="user_latUb" value="{{usuarioub.latUb}}">
+<input type="hidden" id="user_lngUb" value="{{usuarioub.lngUb}}">
+<div class="row" style="padding-bottom: 5%;">
+    <div class="col-8 mx-auto">
+        <div id="mapid" style="width: 100%; height: 400px;">
+        </div>
+    </div>
+</div>
+<h4>Artículos del usuario</h4>
+<hr>
+<div class="container" style="padding-bottom: 5%;">
+    {% if not articulos %}
+    <div class="row justify-content-center">
+        <div class="col-6 text-center">
+            <p>El usuario consultado aún no tiene artículos.</p>
+        </div>
+    </div>
+    {% else %}
+    {% for articulo in articulos %}
+    <div class="row">
+        <div class="col-12 col-lg-4 col-md-6 text-center">
+            <img class="rounded" src="{% get_media_prefix %}{{articulo.fotoart}}" height="335" width="195">
+        </div>
+        <div class="col-12 col-lg-8 col-md-6">
+            <a href="{% url 'gestionArticulos:art' %}?id={{articulo.media_id}}">
+                <h3 class="mb-0 text-truncated">{{articulo.nombre}}</h3>
+            </a>
+            <h5>{{articulo.categoria_text}}</h5>
+            <p>
+                {{articulo.descripcion}}
+            </p>
+            {% if articulo.accion == "INTERCAMBIO" %}
+            <span class="badge badge-pill badge-info">{{articulo.accion}}</span>
+            {% elif articulo.accion == "DONO" %}
+            <span class="badge badge-pill badge-success">{{articulo.accion}}</span>
+            {% else %}
+            <span class="badge badge-pill badge-primary">{{articulo.accion}}</span>
+            {% endif %}
+            <small>
+                {% for tag in articulo.tags.all %}
+                <a href="{% url 'gestionArticulos:artresults' %}?consulta={{tag.name}},&categoria=Todas">
+                    <label class="text-muted">#{{tag.name}}</label>
+                </a>
+                {% endfor %}
+            </small>
+            <p class="font-italic">
+                Artículo subido el {{articulo.fechaAd}}
+            </p>
+        </div>
+    </div>
+    <hr>
+    {% endfor %}
+    {% endif %}
+</div>
+{% else %}
+<div class="row" style="padding-bottom: 5%;">
+    <div class="col-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <div class="row justify-content-center">
+                    <h4>El usuario que intenta consultar no existe</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin="" />
+{% endblock %}
+{% block extra_js %}
+<script type="text/javascript" src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+    crossorigin=""></script>
+<script type="text/javascript" src="{% static "gestionUsuarios/js/showubication.js" %}"></script>
+{% endblock %}

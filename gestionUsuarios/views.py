@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from gestionUsuarios.forms import UsuarioForm, UsuarioInfoForm, UsuarioUbicacionForm
 from gestionUsuarios.models import User, UsuarioInfo, UsuarioUbicacion
+from gestionArticulos.models import Media
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -252,8 +253,8 @@ def my_profile(request):
             fieldUp[5] = True
             if not ubus_form['latUb'].errors:
                 usuarioub = UsuarioUbicacion.objects.get(usuario=request.user)
-                usuarioub.latUb = ubus_form['latUb'].value()
-                usuarioub.lngUb = ubus_form['lngUb'].value()
+                usuarioub.latUb = float(ubus_form['latUb'].value())
+                usuarioub.lngUb = float(ubus_form['lngUb'].value())
                 usuarioub.save()
                 updated = True
 
@@ -300,3 +301,78 @@ def delete_user(request):
 
 
     return render(request, 'gestionUsuarios/deleteprofile.html', {'delerror': delerror})
+
+# Vistas de consulta de usuarios
+def users_results(request):
+    """
+    Devolverá al usuario 5 resultados por página de los usuarios encontrados a traves de su búsqueda del username.
+    """
+
+    if request.method == 'GET':
+        consulta = request.GET.get('consulta')
+        pag = request.GET.get('p')
+        usuarios_ppag = 5  # Usuarios por página
+        usuarios = None
+        n_pags = None
+        n_usuarios = None
+
+        if consulta:
+            if not pag:  # Mantenemos que el número de página exista si el usuario la borra de la cabecera o ha hecho una búsqueda
+                pag = 1
+
+            # Mantenemos que el número de página se encuentre por encima del límite inferior
+            pag = int(pag)
+            if pag < 1:
+                pag = 1
+
+            usuarios = UsuarioInfo.objects.filter(usuario__username__icontains=consulta)
+
+            # Gestionamos las páginas y los resultados a mostrar en esta
+            n_usuarios = usuarios.count()
+            if n_usuarios != 0:
+                if n_usuarios % usuarios_ppag < 1.0:
+                    n_pags = int(n_usuarios/usuarios_ppag)
+                    if n_pags == 0:  # Si hay menos de 10 artículos, habrá una sola página.
+                        n_pags = 1
+                else:  # Si el resultado de artículos por página es impar y mayor que uno, añadimos una página más.
+                    n_pags = int(n_usuarios/usuarios_ppag)+1
+
+                if pag > n_pags:  # Mantenemos el número de página debajo del límite superior.
+                    pag = n_pags
+            else:
+                n_pags = 0
+
+            # Recoge los artículos por página a partir del índice especificado entre los artículos.
+            # En Django la función de OFFSET para los datos se establece con la sintaxis del array de python. [OFFSET, OFFSET+LIMIT]
+            usuarios = usuarios[(pag-1)*usuarios_ppag:(pag-1)*usuarios_ppag+usuarios_ppag]
+
+    print(usuarios)
+    return render(request, 'gestionUsuarios/users.html', {'consulta': consulta,
+                                                              'p': pag,
+                                                              'n_pags': n_pags,
+                                                              'n_usuarios': n_usuarios,
+                                                              'usuarios': usuarios})
+
+def user(request):
+    """
+    Devolverá al usuario el usuario consultado con información de él y sus artículos.
+    """
+
+    if request.method == 'GET':
+        username = request.GET.get('username')
+        articulos = None
+        usuarioinfo = None
+        usuarioub = None
+
+        try:
+            if username:
+                usuarioinfo = UsuarioInfo.objects.get(usuario__username=username)
+                usuarioub = UsuarioUbicacion.objects.get(usuario__username=username)
+                if usuarioinfo and usuarioub:
+                    articulos = Media.objects.filter(propietario=usuarioinfo.usuario, asignado=None)
+        except:
+            articulos = None
+            usuarioinfo = None
+            usuarioub = None
+    
+    return render(request, 'gestionUsuarios/user.html', {'articulos': articulos, 'usuarioinfo': usuarioinfo, 'usuarioub': usuarioub})

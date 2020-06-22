@@ -62,7 +62,16 @@
                </div>
                <div class="col-md-6 mb-3">
                   <label for="id_email">Dirección email <strong style="color: red;">*</strong></label>
+                  {% if usuario_form.email.errors %}
+                  {% render_field usuario_form.email class="form-control is-invalid" placeholder="Dirección email" required="" %}
+                  <small class="form-text text-muted" id="errorEmail">
+                     {% for error in usuario_form.email.errors %}
+                     <p class="text-danger">{{ error }}</p>
+                     {% endfor %}
+                  </small>
+                  {% else %}
                   {% render_field usuario_form.email class="form-control" placeholder="Dirección email" required="" %}
+                  {% endif %}
                </div>
             </div>
             <div class="form-row">

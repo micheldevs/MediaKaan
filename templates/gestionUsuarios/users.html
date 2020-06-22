@@ -1,0 +1,82 @@
+{% extends "gestionUsuarios/base.html" %}
+{% block title %} MediaKaanª | Búsqueda "{{consulta}}" {% endblock %}
+{% load static %}
+{% block body_block %}
+<div class="row">
+
+    <div class="col-lg-12">
+        <small class="text-muted">
+            Para buscar usuarios escriba una parte que recuerde del username.
+        </small>
+        <h1 class="my-4">Resultados en la categoría Usuarios</h1>
+        <h2 class="my-4">Usuarios > "{{consulta}}"</h2>
+        {% if usuarios %}
+        <h2 class="my-4">Se han encontrado {{n_usuarios}} usuarios</h2>
+        {% endif %}
+        <hr>
+    </div>
+
+    {% if usuarios %}
+    <div class="col-lg-12">
+        <div class="row">
+            {% for usuario in usuarios %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card testimonial-card h-100">
+                    <div class="avatar mx-auto white">
+                        <a href="{% url 'gestionUsuarios:usr' %}?username={{usuario.usuario.username}}">
+                        <img src="{% get_media_prefix %}{{usuario.avatar}}" height="110" weight="110" class="border rounded-circle"
+                            alt="usuario avatar">
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <a href="{% url 'gestionUsuarios:usr' %}?username={{usuario.usuario.username}}">
+                            <h4 class="card-title">{{usuario.usuario.username}}</h4>
+                        </a>
+                        <hr>
+                        <p>
+                            <i class="fas fa-quote-left"></i> {{usuario.bio}}
+                        </p>
+                        <p style="text-align: center;">
+                            {% if usuario.valoracion > 0 %}
+                            <span class="glyphicon">☆</span> {{usuario.valoracion}} / {{usuario.n_valoraciones}} valoraciones recibidas
+                            {% else %}
+                            <span class="glyphicon">★</span> {{usuario.valoracion}} / {{usuario.n_valoraciones}} valoraciones recibidas
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <p>Se unió el: {{usuario.usuario.date_joined}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <nav aria-label="pagination">
+                <ul class="pagination">
+                  
+                  <li class="page-item {% if p == 1 %}disabled{% endif %}">
+                    <a class="page-link" href="./?consulta={{consulta}}&p={{p|add:-1}}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="./?consulta={{consulta}}&p={{p}}">{{p}} / {{n_pags}}</a></li>
+                  <li class="page-item {% if p == n_pags %}disabled{% endif %}">
+                    <a class="page-link" href="./?consulta={{consulta}}&p={{p|add:1}}" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-lg-12">
+        <h2 class="my-4">No se han encontrado usuarios para la búsqueda realizada.</h1>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

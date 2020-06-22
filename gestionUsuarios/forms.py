@@ -37,6 +37,14 @@ class UsuarioForm(forms.ModelForm):
             raise forms.ValidationError("Las contraseñas deben coincidir.")
         return passwordRep
     
+    # Validador de email repetido
+    def clean_email(self):
+        email = self.cleaned_data.get('email', False)
+
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("El email que ha introducido ya pertenece a un usuario registrado.")
+        return email
+    
     class Meta():
         model = User
         fields = ('username','email','password')

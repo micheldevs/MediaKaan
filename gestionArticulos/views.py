@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from gestionArticulos.models import Media, Tag
 from gestionUsuarios.models import User, UsuarioInfo, UsuarioUbicacion
@@ -10,7 +11,7 @@ from gestionArticulos.enums import CategoriaType
 
 def articles_results(request):
     """
-    Devolverá al usuario 10 resultados por página de los artículos encontrados a traves de su búsqueda con tags o sin tags usando categorías.
+    Devolverá al usuario 5 resultados por página de los artículos encontrados a traves de su búsqueda con tags o sin tags usando categorías.
     """
 
     if request.method == 'GET':
@@ -23,6 +24,9 @@ def articles_results(request):
         n_articulos = None
 
         if consulta and categoria:
+            if categoria == "Usuarios": # Si la categoría es usuarios, le redirigimos a la vista correspondiente en gestionUsuarios para que trate la consulta
+                return redirect(('%s?consulta='+consulta) % reverse('gestionUsuarios:usrresults'))
+
             if not pag:  # Mantenemos que el número de página exista si el usuario la borra de la cabecera o ha hecho una búsqueda
                 pag = 1
 

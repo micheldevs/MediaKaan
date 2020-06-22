@@ -13,4 +13,6 @@ urlpatterns = [
         views.change_pass, name='change_pass'),
     url(r'^miperfil/$', views.my_profile, name='my_profile'),
     url(r'^eliminarperfil/$', views.delete_user, name='delete_user'),
+    url(r'^resultados/$', views.users_results, name='usrresults'),
+    url(r'^usuario/$', views.user, name='usr'),
 ]

@@ -125,7 +125,16 @@
       {% csrf_token %}
       <div class="col-sm-4">
         <label for="id_email">Escriba su nuevo email</label>
+        {% if fieldUp.3 and usuario_form.email.errors %}
+        {% render_field usuario_form.email class="form-control is-invalid" placeholder="Dirección email" required="" %}
+        <small class="form-text text-muted" id="errorEmail">
+           {% for error in usuario_form.email.errors %}
+           <p class="text-danger">{{ error }}</p>
+           {% endfor %}
+        </small>
+        {% else %}
         {% render_field usuario_form.email class="form-control" placeholder="Dirección email" required="" %}
+        {% endif %}
         <br>
         <button class="btn btn-lg btn-info btn-block" type="submit">Cambiar email</button>
       </div>
