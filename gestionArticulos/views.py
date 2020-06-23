@@ -203,8 +203,27 @@ def my_articles(request):
 @login_required
 def rec_articles(request):
     """
-    Devolverá al usuario una plantilla con los artículos que ha obtenido de otras personas.
+    Devolverá al usuario una plantilla con los artículos que ha obtenido de otras personas y podrá valorar dichos artículos.
     """
+
+    articulo = None
+    propietario = None
+    if request.method == "POST":
+        try:
+            if request.POST.get('valorar') and 0 < request.POST.get('selected_rating') <= 5: # Comprobamos que la valoración del artículo está entre el rango de estrellas
+                id = request.POST.get('valorar')
+                articulo = Media.objects.get(media_id=id)
+                if articulo:
+                    propietario = UsuarioInfo.objects.get(usuario=articulo.propietario)
+                    if propietario:
+                        articulo.valorado = request.POST.get('selected_rating')
+                        propietario.valoracion = propietario.valoracion + request.POST.get('selected_rating')
+                        propietario.n_valoraciones = propietario.n_valoraciones + 1
+                        articulo.save()
+                        propietario.save()
+        except:
+            articulo = None
+            propietario = None
 
     if Media.objects.filter(asignado=request.user).exists():
         articulos = Media.objects.filter(asignado=request.user)

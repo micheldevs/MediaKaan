@@ -33,18 +33,20 @@ class Media(models.Model):
         - La categoría a la cual pertenece el artículo
         - Los tags del artículo
         - Una clave extranjera con un User que será null inicialmente
+        - La valoración del usuario asignado que le ha dado al artículo y al propietario
         - La fecha de adición del artículo
     """
 
-    media_id=models.AutoField(primary_key=True, auto_created=True)
+    media_id=models.AutoField(primary_key=True)
     propietario=models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_propietario')
     nombre=models.CharField(max_length=100)
     descripcion=models.CharField(max_length=240)
     fotoart=models.ImageField(upload_to='articulos')
     accion=models.CharField(max_length=12, choices=AccionType.choices(), verbose_name='Acción')
     categoria=models.CharField(max_length=12, choices=CategoriaType.choices(), verbose_name='Categoría')
-    tags=models.ManyToManyField(Tag, blank=True, related_name='Medias')
+    tags=models.ManyToManyField(Tag, blank=True)
     asignado=models.ForeignKey(User, on_delete=models.SET_NULL, related_name='user_asignado', blank=True, null=True)
+    valorado=models.IntegerField(default=0)
     fechaAd=models.DateTimeField(auto_now_add=True, verbose_name='Fecha de adición')
 
     def categoria_text(self):

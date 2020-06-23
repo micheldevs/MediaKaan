@@ -1,6 +1,7 @@
 {% extends "gestionUsuarios/base.html" %}
 {% block title %} MediaKaanª | Usuario {{usuarioinfo.usuario.username}} {% endblock %}
 {% load static %}
+{% load mathfilters %}
 {% block body_block %}
 <div class="row" style="padding-bottom: 5%;">
     <a href="javascript:history.back()" style="color: gray;">← Volver atrás</a>
@@ -20,10 +21,10 @@
                             El usuario se unió el {{usuarioinfo.usuario.date_joined}}
                         </p>
                         <p>
-                            {% if usuarioinfo.valoracion > 0 %}
-                            <span class="glyphicon">☆</span> {{usuarioinfo.valoracion}} / {{usuarioinfo.n_valoraciones}} valoraciones recibidas
+                            {% if usuarioinfo.n_valoraciones > 0 %}
+                            <span class="glyphicon">★</span> {{usuarioinfo.valoracion|div:usuarioinfo.n_valoraciones}} / {{usuarioinfo.n_valoraciones}} valoraciones recibidas
                             {% else %}
-                            <span class="glyphicon">★</span> {{usuarioinfo.valoracion}} / {{usuarioinfo.n_valoraciones}} valoraciones recibidas
+                            <span class="glyphicon">☆</span> {{usuarioinfo.valoracion}} / {{usuarioinfo.n_valoraciones}} valoraciones recibidas                            
                             {% endif %}
                         </p>
                     </div>

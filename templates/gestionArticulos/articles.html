@@ -29,7 +29,7 @@
                         </h4>
                         <h5>{{articulo.categoria_text}}</h5>
                         <p class="card-text">{{articulo.descripcion}}</p>
-                        <h6><a href="#" class="text-muted">De {{articulo.propietario.username}}</a></h6>
+                        <h6><a href="{% url 'gestionUsuarios:usr' %}?username={{articulo.propietario.username}}" class="text-muted">De {{articulo.propietario.username}}</a></h6>
                         {% if articulo.accion == "INTERCAMBIO" %}
                         <span class="badge badge-pill badge-info">{{articulo.accion}}</span>
                         {% elif articulo.accion == "DONO" %}

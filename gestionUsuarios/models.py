@@ -14,7 +14,7 @@ class UsuarioInfo(models.Model):
         - Un modelo User que hace de clave extranjera primaria (con username, email, password, fecha de unión, etc...)
         - Un avatar para el perfil
         - Una pequeña descripción
-        - La valoración de su perfil en la aplicación
+        - La valoración de su perfil en la aplicación y su número de valoraciones
         - Su fecha de nacimiento
     """
 
@@ -22,6 +22,7 @@ class UsuarioInfo(models.Model):
     avatar=models.ImageField(upload_to='avatars')
     bio=models.CharField(max_length=150)
     valoracion=models.IntegerField(default=0)
+    n_valoraciones=models.IntegerField(default=0)
     fechaNacimiento=models.DateField(default=timezone.now, verbose_name='Fecha de nacimiento')
 
     def __str__(self):

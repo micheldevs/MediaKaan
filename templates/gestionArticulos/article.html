@@ -1,6 +1,7 @@
 {% extends "gestionUsuarios/base.html" %}
 {% block title %} MediaKaanª | Artículo {{articulo.nombre}} {% endblock %}
 {% load static %}
+{% load mathfilters %}
 {% block body_block %}
 <div class="row" style="padding-bottom: 5%;">
     <a href="javascript:history.back()" style="color: gray;">← Volver atrás</a>
@@ -12,9 +13,16 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12 col-lg-8 col-md-6">
-                        <h3 class="mb-0 text-truncated">Artículo de: {{articulo.propietario.username}}</h3>
+                        <h3 class="mb-0 text-truncated">Artículo de: <a href="{% url 'gestionUsuarios:usr' %}?username={{articulo.propietario.username}}">{{articulo.propietario.username}}</a></h3>
                         <p>
                             {{usuarioinfo.bio}}
+                        </p>
+                        <p>
+                            {% if usuarioinfo.n_valoraciones > 0 %}
+                            <span class="glyphicon">★</span> {{usuarioinfo.valoracion|div:usuarioinfo.n_valoraciones}} / {{usuarioinfo.n_valoraciones}} valoraciones recibidas
+                            {% else %}
+                            <span class="glyphicon">☆</span> {{usuarioinfo.valoracion}} / {{usuarioinfo.n_valoraciones}} valoraciones recibidas                            
+                            {% endif %}
                         </p>
                     </div>
                     <div class="col-12 col-lg-4 col-md-6 text-center">
