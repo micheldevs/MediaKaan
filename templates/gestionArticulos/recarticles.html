@@ -73,6 +73,7 @@
                     </p>
                     {% else %}
                     <form method="post">
+                        {% csrf_token %}
                         <div class="form-group" id="rating-ability-wrapper">
                             <label class="control-label" for="rating">
                             <span class="field-label-header">Aún no ha valorado el artículo ni el usuario ¿cual sería su valoración de la experiencia?</span><br>

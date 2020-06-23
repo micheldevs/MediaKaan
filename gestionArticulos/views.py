@@ -138,9 +138,9 @@ def add_article(request):
 
             # Tratamiento de los tags
             for tagname in tag_list:
-                if Tag.objects.get(name=tagname): # Comprobamos si ya existe el tag que se quiere añadir y si no existe lo creamos.
+                try:
                     tag = Tag.objects.get(name=tagname)
-                else:
+                except Tag.DoesNotExist:
                     tag = Tag.objects.create(name=tagname)
 
                 media.tags.add(tag)
@@ -210,14 +210,14 @@ def rec_articles(request):
     propietario = None
     if request.method == "POST":
         try:
-            if request.POST.get('valorar') and 0 < request.POST.get('selected_rating') <= 5: # Comprobamos que la valoración del artículo está entre el rango de estrellas
+            if request.POST.get('valorar') and 0 < int(request.POST.get('selected_rating')) <= 5: # Comprobamos que la valoración del artículo está entre el rango de estrellas
                 id = request.POST.get('valorar')
                 articulo = Media.objects.get(media_id=id)
                 if articulo:
                     propietario = UsuarioInfo.objects.get(usuario=articulo.propietario)
                     if propietario:
-                        articulo.valorado = request.POST.get('selected_rating')
-                        propietario.valoracion = propietario.valoracion + request.POST.get('selected_rating')
+                        articulo.valorado = int(request.POST.get('selected_rating'))
+                        propietario.valoracion = propietario.valoracion + int(request.POST.get('selected_rating'))
                         propietario.n_valoraciones = propietario.n_valoraciones + 1
                         articulo.save()
                         propietario.save()

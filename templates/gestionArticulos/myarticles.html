@@ -90,7 +90,7 @@
                         {% csrf_token %}
                         {% if articulo.asignado %}
                         <p class="font-italic">
-                            Artículo asignado a: <a href="#">{{articulo.asignado.username}}</a>
+                            Artículo asignado a: <a href="{% url 'gestionUsuarios:usr' %}?username={{articulo.asignado.username}}">{{articulo.asignado.username}}</a>
                         </p>
                         {% else %}
                         <div class="form-group">
