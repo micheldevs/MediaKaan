@@ -37,7 +37,7 @@
           {{usuarioinfo.bio}}
         </p>
         <p>Fecha de nacimiento: {{usuarioinfo.fechaNacimiento}}</p>
-        <p>Puntuación: {% if usuarioinfo.n_valoraciones > 0 %}{{usuarioinfo.valoracion|div:usuarioinfo.n_valoraciones}}★{% else %}{{usuarioinfo.valoracion}} ☆{% endif %}</p>
+        <p>Puntuación: {% if usuarioinfo.n_valoraciones > 0 %}{{usuarioinfo.valoracion|intdiv:usuarioinfo.n_valoraciones}}★{% else %}{{usuarioinfo.valoracion}} ☆{% endif %}</p>
       </div>
       <div class="col-12 col-lg-4 col-md-6 text-center">
         <img class="rounded-circle border" src="{% get_media_prefix %}{{usuarioinfo.avatar}}" width="140" height="140">

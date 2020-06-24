@@ -21,6 +21,7 @@ def index(request):
     """
     Creará una respuesta al usuario mostrando la página índice de la aplicación.
     """
+    
     return render(request,'index.html')
 
 def about(request):
@@ -370,7 +371,7 @@ def user(request):
                 usuarioub = UsuarioUbicacion.objects.get(usuario__username=username)
                 if usuarioinfo and usuarioub:
                     articulos = Media.objects.filter(propietario=usuarioinfo.usuario, asignado=None)
-        except:
+        except (UsuarioInfo.DoesNotExist, UsuarioUbicacion.DoesNotExist, Media.DoesNotExist):
             articulos = None
             usuarioinfo = None
             usuarioub = None

@@ -24,17 +24,17 @@ def articles_results(request):
         n_pags = None
         n_articulos = None
 
+        if not pag:  # Mantenemos que el número de página exista si el usuario la borra de la cabecera o ha hecho una búsqueda
+            pag = 1
+
+        # Mantenemos que el número de página se encuentre por encima del límite inferior
+        pag = int(pag)
+        if pag < 1:
+            pag = 1
+
         if consulta and categoria:
             if categoria == "Usuarios":  # Si la categoría es usuarios, le redirigimos a la vista correspondiente en gestionUsuarios para que trate la consulta
                 return redirect(('%s?consulta='+consulta) % reverse('gestionUsuarios:usrresults'))
-
-            if not pag:  # Mantenemos que el número de página exista si el usuario la borra de la cabecera o ha hecho una búsqueda
-                pag = 1
-
-            # Mantenemos que el número de página se encuentre por encima del límite inferior
-            pag = int(pag)
-            if pag < 1:
-                pag = 1
 
             # Listamos los tags si se han utilizado. (separados por comas)
             if ',' in consulta:
@@ -43,19 +43,18 @@ def articles_results(request):
 
             if categoria != "Todas":  # Filtramos por categoría.
                 if ',' in consulta:  # Si se encuentran comas en la consulta, la búsqueda será por tags.
-                    articulos = Media.objects.filter(categoria__exact=CategoriaType(
-                        categoria).name, tags__name__in=taglist, asignado=None)
+                    articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, tags__name__in=taglist, asignado=None)
                 else:
-                    articulos = Media.objects.filter(categoria__exact=CategoriaType(
-                        categoria).name, nombre__icontains=consulta, asignado=None)
+                    articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, nombre__icontains=consulta, asignado=None)
             else:
                 if ',' in consulta:
-                    articulos = Media.objects.filter(
-                        tags__name__in=taglist, asignado=None)
+                    articulos = Media.objects.filter(tags__name__in=taglist, asignado=None)
                 else:
-                    articulos = Media.objects.filter(
-                        nombre__icontains=consulta, asignado=None)
+                    articulos = Media.objects.filter(nombre__icontains=consulta, asignado=None)
+        elif categoria and categoria != "Todas" and categoria != "Usuarios":
+            articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, asignado=None)
 
+        if articulos:
             # Gestionamos las páginas y los resultados a mostrar en esta
             n_articulos = articulos.count()
             if n_articulos != 0:
@@ -73,10 +72,9 @@ def articles_results(request):
 
             # Recoge los artículos por página a partir del índice especificado entre los artículos.
             # En Django la función de OFFSET para los datos se establece con la sintaxis del array de python. [OFFSET, OFFSET+LIMIT]
-            articulos = articulos[(pag-1)*articulos_ppag:(pag-1)
-                                  * articulos_ppag+articulos_ppag]
+            articulos = articulos[(pag-1)*articulos_ppag:(pag-1) * articulos_ppag+articulos_ppag]
 
-    print(articulos)
+
     return render(request, 'gestionArticulos/articles.html', {'consulta': consulta,
                                                               'categoria': categoria,
                                                               'p': pag,
@@ -96,18 +94,10 @@ def article(request):
         usuarioinfo = None
         usuarioub = None
 
-        try:
-            if id:
-                articulo = Media.objects.get(media_id=id, asignado=None)
-                if articulo:
-                    usuarioinfo = UsuarioInfo.objects.get(
-                        usuario=articulo.propietario)
-                    usuarioub = UsuarioUbicacion.objects.get(
-                        usuario=articulo.propietario)
-        except:
-            articulo = None
-            usuarioinfo = None
-            usuarioub = None
+        if id and Media.objects.filter(media_id=id, asignado=None).exists():
+            articulo = Media.objects.get(media_id=id, asignado=None)
+            usuarioinfo = UsuarioInfo.objects.get(usuario=articulo.propietario)
+            usuarioub = UsuarioUbicacion.objects.get(usuario=articulo.propietario)
 
     return render(request, 'gestionArticulos/article.html', {'articulo': articulo, 'usuarioinfo': usuarioinfo, 'usuarioub': usuarioub})
 
@@ -150,9 +140,9 @@ def add_article(request):
 
             # Tratamiento de los tags
             for tagname in tag_list:
-                try:
+                if Tag.objects.filter(name=tagname).exists(): # Si el tag ya existe en la base de datos, creamos uno nuevo para el artículo y lo añadimos al artículo
                     tag = Tag.objects.get(name=tagname)
-                except Tag.DoesNotExist:
+                else:
                     tag = Tag.objects.create(name=tagname)
 
                 media.tags.add(tag)
@@ -180,32 +170,25 @@ def my_articles(request):
         articulo = None
 
         if request.POST.get('eliminar'):
-            try:
-                id = request.POST.get('eliminar')
-                # Comprobamos que el usuario es dueño del artículo que desea borrar identificado con su id correspondiente.
-                articulo = Media.objects.get(
-                    media_id=id, propietario=request.user)
-                if articulo:
-                    borrado = articulo.nombre
-                    articulo.delete()
-            except:
-                articulo = None
+            id = request.POST.get('eliminar')
+            # Comprobamos que el usuario es dueño del artículo que desea borrar identificado con su id correspondiente.
+            if Media.objects.filter(media_id=id, propietario=request.user).exists():
+                articulo = Media.objects.get(media_id=id, propietario=request.user)
+                borrado = articulo.nombre
+                articulo.delete()
         else:
             if request.POST.get('asignar') and request.POST.get('asignado'):
-                try:
-                    id = request.POST.get('asignar')
-                    us_asignado = User.objects.get(
-                        username=request.POST.get('asignado'))
-
-                    if us_asignado != request.user:  # Evitamos que el usuario se lo asigne a sí mismo.
-                        articulo = Media.objects.get(
-                            media_id=id, propietario=request.user, asignado=None)
+                id = request.POST.get('asignar')
+                if User.objects.filter(username=request.POST.get('asignado')).exists():
+                    us_asignado = User.objects.get(username=request.POST.get('asignado'))
+                    if us_asignado != request.user and Media.objects.filter(media_id=id, propietario=request.user, asignado=None).exists():  # Evitamos que el usuario se lo asigne a sí mismo y vemos si el artículo no está asignado.
+                        articulo = Media.objects.get(media_id=id, propietario=request.user, asignado=None)
                         articulo.asignado = us_asignado
                         asignado = us_asignado.username
                         articulo.save()
                     else:
                         erroras = True
-                except:
+                else:
                     erroras = True
             else:
                 erroras = True
@@ -230,15 +213,13 @@ def rec_articles(request):
         id = request.POST.get('valorar')
         val = int(request.POST.get('selected_rating_'+id))
         if id and 0 < val <= 5:  # Comprobamos que la valoración del artículo está entre el rango de estrellas
-            if Media.objects.filter(media_id=id, asignado=request.user).exists():
-                articulo = Media.objects.get(
-                    media_id=id, asignado=request.user)
-                if UsuarioInfo.objects.filter(usuario=articulo.propietario).exists():
-                    propietario = UsuarioInfo.objects.get(
-                        usuario=articulo.propietario)
-                    articulo.valorado = val
-                    propietario.valoracion = propietario.valoracion + val
-                    propietario.n_valoraciones = propietario.n_valoraciones + 1
+            if Media.objects.filter(media_id=id, asignado=request.user).exists(): # Comprobamos que existe el artículo con dicho id que se le asignó al usuario
+                articulo = Media.objects.get(media_id=id, asignado=request.user)
+                if UsuarioInfo.objects.filter(usuario=articulo.propietario).exists(): # Comprobamos si existe su propietario
+                    propietario = UsuarioInfo.objects.get(usuario=articulo.propietario)
+                    articulo.valorado = val # Asignamos la valoración al artículo
+                    propietario.valoracion = propietario.valoracion + val # Asignamos a la valoración global del usuario una adición con la del artículo
+                    propietario.n_valoraciones = propietario.n_valoraciones + 1 # Añadimos al número de valoraciones una más por el usuario
                     articulo.save()
                     propietario.save()
 
