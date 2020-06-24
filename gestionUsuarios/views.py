@@ -2,6 +2,7 @@ from django.shortcuts import render
 from gestionUsuarios.forms import UsuarioForm, UsuarioInfoForm, UsuarioUbicacionForm
 from gestionUsuarios.models import User, UsuarioInfo, UsuarioUbicacion
 from gestionArticulos.models import Media
+from gestionArticulos.enums import CategoriaType
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -19,10 +20,22 @@ from django.utils.http import urlsafe_base64_decode
 
 def index(request):
     """
-    Creará una respuesta al usuario mostrando la página índice de la aplicación.
+    Creará una respuesta al usuario mostrando la página índice de la aplicación con una pequeña visión general del número de artículos por categoría que hay en la aplicación.
     """
-    
-    return render(request,'index.html')
+
+    n_peliculas = Media.objects.filter(categoria='PELICULAS', asignado=None).count()
+    n_series = Media.objects.filter(categoria='SERIES', asignado=None).count()
+    n_vjuegos = Media.objects.filter(categoria='VIDEOJUEGOS', asignado=None).count()
+    n_comics = Media.objects.filter(categoria='COMICS', asignado=None).count()
+    n_libros = Media.objects.filter(categoria='LIBROS', asignado=None).count()
+    n_musica = Media.objects.filter(categoria='MUSICA', asignado=None).count()
+
+    return render(request,'index.html', {'n_peliculas': n_peliculas,
+                                         'n_series': n_series,
+                                         'n_vjuegos': n_vjuegos,
+                                         'n_comics': n_comics,
+                                         'n_libros': n_libros,
+                                         'n_musica': n_musica})
 
 def about(request):
     """
@@ -304,6 +317,7 @@ def delete_user(request):
     return render(request, 'gestionUsuarios/deleteprofile.html', {'delerror': delerror})
 
 # Vistas de consulta de usuarios
+
 def users_results(request):
     """
     Devolverá al usuario 5 resultados por página de los usuarios encontrados a traves de su búsqueda del username.

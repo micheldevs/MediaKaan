@@ -1,12 +1,67 @@
 {% extends "gestionUsuarios/base.html" %}
 {% block title %} MediaKaanª | Inicio {% endblock %}
+{% load static %}
 {% block body_block %}
 <div class="jumbotron">
     <h1>¡Bienvenido a MediaKaanª!</h1>
     {% if user.is_authenticated %}
-    <h2>Saludos {{ user.username }}. Registre un artículo, chatee o esté pendiente de los nuevos artículos realizando una consulta.</h2>
+    <h2>Saludos {{ user.username }}. Registre un artículo, chatee o esté pendiente de los nuevos artículos realizando
+        una consulta.</h2>
     {% else %}
-    <h2>La plataforma para donar o intercambiar multimedia de forma desinteresada entre usuarios. Navegue como invitado o inicie sesión para conocer más.</h2>
+    <h2>La plataforma para donar o intercambiar multimedia de forma desinteresada entre usuarios. Navegue como invitado
+        o inicie sesión para conocer más.</h2>
     {% endif %}
 </div>
+<h3>Artículos libres en este momento:</h3>
+<div class="row">
+    <div class="card col-md-4 border-0 rounded-0 text-center">
+        <a href="{% url 'gestionArticulos:artresults' %}?categoria=Películas">
+            <img src="{% static "gestionUsuarios/img/logo/movies.png" %}" class="card-img rounded-0">
+            <div class="card-img-overlay d-flex flex-column justify-content-center">
+                <h3 class="card-title text-white">{{n_peliculas}} películas</h3>
+            </div>
+        </a>
+    </div>
+    <div class="card col-md-4 border-0 rounded-0 text-center">
+        <a href="{% url 'gestionArticulos:artresults' %}?categoria=Series">
+            <img src="{% static "gestionUsuarios/img/logo/series.png" %}" class="card-img rounded-0">
+            <div class="card-img-overlay d-flex flex-column justify-content-center">
+                <h3 class="card-title text-white">{{n_series}} series</h3>
+            </div>
+        </a>
+    </div>
+    <div class="card col-md-4 border-0 rounded-0 text-center">
+        <a href="{% url 'gestionArticulos:artresults' %}?categoria=Videojuegos">
+            <img src="{% static "gestionUsuarios/img/logo/vgames.png" %}" class="card-img rounded-0">
+            <div class="card-img-overlay d-flex flex-column justify-content-center">
+                <h3 class="card-title text-white">{{n_vjuegos}} videojuegos</h3>
+            </div>
+        </a>
+    </div>
+    <div class="card col-md-4 border-0 rounded-0 text-center">
+        <a href="{% url 'gestionArticulos:artresults' %}?categoria=Música">
+            <img src="{% static "gestionUsuarios/img/logo/music.png" %}" class="card-img rounded-0">
+            <div class="card-img-overlay d-flex flex-column justify-content-center">
+                <h3 class="card-title text-white">{{n_musica}} discos</h3>
+            </div>
+        </a>
+    </div>
+    <div class="card col-md-4 border-0 rounded-0 text-center">
+        <a href="{% url 'gestionArticulos:artresults' %}?categoria=Libros">
+            <img src="{% static "gestionUsuarios/img/logo/books.png" %}" class="card-img rounded-0">
+            <div class="card-img-overlay d-flex flex-column justify-content-center">
+                <h3 class="card-title text-white">{{n_libros}} libros</h3>
+            </div>
+        </a>
+    </div>
+    <div class="card col-md-4 border-0 rounded-0 text-center">
+        <a href="{% url 'gestionArticulos:artresults' %}?categoria=Cómics">
+            <img src="{% static "gestionUsuarios/img/logo/comics.png" %}" class="card-img rounded-0">
+            <div class="card-img-overlay d-flex flex-column justify-content-center">
+                <h3 class="card-title text-white">{{n_comics}} cómics</h3>
+            </div>
+        </a>
+    </div>
+</div>
+<br>
 {% endblock %}

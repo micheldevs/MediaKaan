@@ -1,5 +1,5 @@
 {% extends "gestionUsuarios/base.html" %}
-{% block title %} MediaKaanª | Búsqueda "{{consulta}}" {% endblock %}
+{% block title %} MediaKaanª | Búsqueda {% if consulta and categoria %}"{{consulta}}"{% else %}{{categoria}}{% endif %} {% endblock %}
 {% load static %}
 {% block body_block %}
 <div class="row">
@@ -9,7 +9,7 @@
             Para buscar por tags es necesario realizar una búsqueda con los tags separados por comas. Ej: 'peli,música,videojuego' o 'peli,'.
         </small>
         <h1 class="my-4">Resultados en la categoría {{categoria}}</h1>
-        <h2 class="my-4">{{categoria}} > "{{consulta}}"</h2>
+        <h2 class="my-4">{{categoria}}{% if consulta %} > "{{consulta}}" {% endif %}</h2>
         {% if articulos %}
         <h2 class="my-4">Se han encontrado {{n_articulos}} artículos</h2>
         {% endif %}

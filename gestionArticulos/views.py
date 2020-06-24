@@ -9,6 +9,7 @@ from gestionArticulos.enums import CategoriaType
 # Create your views here.
 # Las vistas se encargarán de gestionar las peticiones y las respuestas de las páginas web de la aplicación.
 
+# Vistas de consulta de artículos
 
 def articles_results(request):
     """
@@ -73,6 +74,8 @@ def articles_results(request):
             # Recoge los artículos por página a partir del índice especificado entre los artículos.
             # En Django la función de OFFSET para los datos se establece con la sintaxis del array de python. [OFFSET, OFFSET+LIMIT]
             articulos = articulos[(pag-1)*articulos_ppag:(pag-1) * articulos_ppag+articulos_ppag]
+        else:
+            n_articulos = 0
 
 
     return render(request, 'gestionArticulos/articles.html', {'consulta': consulta,
@@ -81,7 +84,6 @@ def articles_results(request):
                                                               'n_pags': n_pags,
                                                               'n_articulos': n_articulos,
                                                               'articulos': articulos})
-
 
 def article(request):
     """
@@ -101,6 +103,7 @@ def article(request):
 
     return render(request, 'gestionArticulos/article.html', {'articulo': articulo, 'usuarioinfo': usuarioinfo, 'usuarioub': usuarioub})
 
+# Vistas del panel de usuario relacionadas con artículos
 
 @login_required
 def add_article(request):
@@ -156,7 +159,6 @@ def add_article(request):
                                                                 'tagserror': tagserror,
                                                                 'registered': registered})
 
-
 @login_required
 def my_articles(request):
     """
@@ -199,7 +201,6 @@ def my_articles(request):
         articulos = None
 
     return render(request, 'gestionArticulos/myarticles.html', {'articulos': articulos, 'borrado': borrado, 'asignado': asignado, 'erroras': erroras})
-
 
 @login_required
 def rec_articles(request):
