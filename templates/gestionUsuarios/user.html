@@ -22,7 +22,7 @@
                         </p>
                         <p>
                             {% if usuarioinfo.n_valoraciones > 0 %}
-                            <span class="glyphicon">★</span> {{usuarioinfo.valoracion|div:usuarioinfo.n_valoraciones}} / {{usuarioinfo.n_valoraciones}} valoraciones recibidas
+                            <span class="glyphicon">★</span> {{usuarioinfo.valoracion|intdiv:usuarioinfo.n_valoraciones}} / {{usuarioinfo.n_valoraciones}} valoraciones recibidas
                             {% else %}
                             <span class="glyphicon">☆</span> {{usuarioinfo.valoracion}} / {{usuarioinfo.n_valoraciones}} valoraciones recibidas                            
                             {% endif %}

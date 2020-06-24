@@ -9,6 +9,7 @@ from gestionArticulos.enums import CategoriaType
 # Create your views here.
 # Las vistas se encargarán de gestionar las peticiones y las respuestas de las páginas web de la aplicación.
 
+
 def articles_results(request):
     """
     Devolverá al usuario 5 resultados por página de los artículos encontrados a traves de su búsqueda con tags o sin tags usando categorías.
@@ -24,7 +25,7 @@ def articles_results(request):
         n_articulos = None
 
         if consulta and categoria:
-            if categoria == "Usuarios": # Si la categoría es usuarios, le redirigimos a la vista correspondiente en gestionUsuarios para que trate la consulta
+            if categoria == "Usuarios":  # Si la categoría es usuarios, le redirigimos a la vista correspondiente en gestionUsuarios para que trate la consulta
                 return redirect(('%s?consulta='+consulta) % reverse('gestionUsuarios:usrresults'))
 
             if not pag:  # Mantenemos que el número de página exista si el usuario la borra de la cabecera o ha hecho una búsqueda
@@ -42,14 +43,18 @@ def articles_results(request):
 
             if categoria != "Todas":  # Filtramos por categoría.
                 if ',' in consulta:  # Si se encuentran comas en la consulta, la búsqueda será por tags.
-                    articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, tags__name__in=taglist, asignado=None)
+                    articulos = Media.objects.filter(categoria__exact=CategoriaType(
+                        categoria).name, tags__name__in=taglist, asignado=None)
                 else:
-                    articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, nombre__icontains=consulta, asignado=None)
+                    articulos = Media.objects.filter(categoria__exact=CategoriaType(
+                        categoria).name, nombre__icontains=consulta, asignado=None)
             else:
                 if ',' in consulta:
-                    articulos = Media.objects.filter(tags__name__in=taglist, asignado=None)
+                    articulos = Media.objects.filter(
+                        tags__name__in=taglist, asignado=None)
                 else:
-                    articulos = Media.objects.filter(nombre__icontains=consulta, asignado=None)
+                    articulos = Media.objects.filter(
+                        nombre__icontains=consulta, asignado=None)
 
             # Gestionamos las páginas y los resultados a mostrar en esta
             n_articulos = articulos.count()
@@ -68,7 +73,8 @@ def articles_results(request):
 
             # Recoge los artículos por página a partir del índice especificado entre los artículos.
             # En Django la función de OFFSET para los datos se establece con la sintaxis del array de python. [OFFSET, OFFSET+LIMIT]
-            articulos = articulos[(pag-1)*articulos_ppag:(pag-1)*articulos_ppag+articulos_ppag]
+            articulos = articulos[(pag-1)*articulos_ppag:(pag-1)
+                                  * articulos_ppag+articulos_ppag]
 
     print(articulos)
     return render(request, 'gestionArticulos/articles.html', {'consulta': consulta,
@@ -77,6 +83,7 @@ def articles_results(request):
                                                               'n_pags': n_pags,
                                                               'n_articulos': n_articulos,
                                                               'articulos': articulos})
+
 
 def article(request):
     """
@@ -93,14 +100,17 @@ def article(request):
             if id:
                 articulo = Media.objects.get(media_id=id, asignado=None)
                 if articulo:
-                    usuarioinfo = UsuarioInfo.objects.get(usuario=articulo.propietario)
-                    usuarioub = UsuarioUbicacion.objects.get(usuario=articulo.propietario)
+                    usuarioinfo = UsuarioInfo.objects.get(
+                        usuario=articulo.propietario)
+                    usuarioub = UsuarioUbicacion.objects.get(
+                        usuario=articulo.propietario)
         except:
             articulo = None
             usuarioinfo = None
             usuarioub = None
 
     return render(request, 'gestionArticulos/article.html', {'articulo': articulo, 'usuarioinfo': usuarioinfo, 'usuarioub': usuarioub})
+
 
 @login_required
 def add_article(request):
@@ -115,8 +125,10 @@ def add_article(request):
 
         tags = request.POST.get('id_tags')
 
-        if len(tags) <= 159: # Número de caracteres máximos con tags con comas incluídas.
-            tag_list = tags.split(',') # Separamos por coma los tags introducidos por el usuario y los metemos en una lista.
+        # Número de caracteres máximos con tags con comas incluídas.
+        if len(tags) <= 159:
+            # Separamos por coma los tags introducidos por el usuario y los metemos en una lista.
+            tag_list = tags.split(',')
 
             # Comprobamos que haya como máximo 10 tags con 15 caracteres cada uno como máximo.
             if len(tag_list) <= 10:
@@ -127,7 +139,7 @@ def add_article(request):
                 tagserror = True
         else:
             tagserror = True
-        
+
         # Comprobamos que el formulario está libre de errores
         if media_form.is_valid() and not tagserror:
             # Creación del artículo
@@ -144,15 +156,16 @@ def add_article(request):
                     tag = Tag.objects.create(name=tagname)
 
                 media.tags.add(tag)
-            
+
             media.save()
-            registered = True # Guardamos el artículo en la base de datos e informamos al usuario de que la operación se ha completado con éxito
+            registered = True  # Guardamos el artículo en la base de datos e informamos al usuario de que la operación se ha completado con éxito
     else:
         media_form = MediaForm()
 
     return render(request, 'gestionArticulos/addarticle.html', {'media_form': media_form,
                                                                 'tagserror': tagserror,
                                                                 'registered': registered})
+
 
 @login_required
 def my_articles(request):
@@ -169,7 +182,9 @@ def my_articles(request):
         if request.POST.get('eliminar'):
             try:
                 id = request.POST.get('eliminar')
-                articulo = Media.objects.get(media_id=id, propietario=request.user) # Comprobamos que el usuario es dueño del artículo que desea borrar identificado con su id correspondiente.
+                # Comprobamos que el usuario es dueño del artículo que desea borrar identificado con su id correspondiente.
+                articulo = Media.objects.get(
+                    media_id=id, propietario=request.user)
                 if articulo:
                     borrado = articulo.nombre
                     articulo.delete()
@@ -179,10 +194,12 @@ def my_articles(request):
             if request.POST.get('asignar') and request.POST.get('asignado'):
                 try:
                     id = request.POST.get('asignar')
-                    us_asignado = User.objects.get(username=request.POST.get('asignado'))
+                    us_asignado = User.objects.get(
+                        username=request.POST.get('asignado'))
 
-                    if us_asignado != request.user: # Evitamos que el usuario se lo asigne a sí mismo.
-                        articulo = Media.objects.get(media_id=id, propietario=request.user, asignado=None)
+                    if us_asignado != request.user:  # Evitamos que el usuario se lo asigne a sí mismo.
+                        articulo = Media.objects.get(
+                            media_id=id, propietario=request.user, asignado=None)
                         articulo.asignado = us_asignado
                         asignado = us_asignado.username
                         articulo.save()
@@ -200,6 +217,7 @@ def my_articles(request):
 
     return render(request, 'gestionArticulos/myarticles.html', {'articulos': articulos, 'borrado': borrado, 'asignado': asignado, 'erroras': erroras})
 
+
 @login_required
 def rec_articles(request):
     """
@@ -209,21 +227,20 @@ def rec_articles(request):
     articulo = None
     propietario = None
     if request.method == "POST":
-        try:
-            if request.POST.get('valorar') and 0 < int(request.POST.get('selected_rating')) <= 5: # Comprobamos que la valoración del artículo está entre el rango de estrellas
-                id = request.POST.get('valorar')
-                articulo = Media.objects.get(media_id=id)
-                if articulo:
-                    propietario = UsuarioInfo.objects.get(usuario=articulo.propietario)
-                    if propietario:
-                        articulo.valorado = int(request.POST.get('selected_rating'))
-                        propietario.valoracion = propietario.valoracion + int(request.POST.get('selected_rating'))
-                        propietario.n_valoraciones = propietario.n_valoraciones + 1
-                        articulo.save()
-                        propietario.save()
-        except:
-            articulo = None
-            propietario = None
+        id = request.POST.get('valorar')
+        val = int(request.POST.get('selected_rating_'+id))
+        if id and 0 < val <= 5:  # Comprobamos que la valoración del artículo está entre el rango de estrellas
+            if Media.objects.filter(media_id=id, asignado=request.user).exists():
+                articulo = Media.objects.get(
+                    media_id=id, asignado=request.user)
+                if UsuarioInfo.objects.filter(usuario=articulo.propietario).exists():
+                    propietario = UsuarioInfo.objects.get(
+                        usuario=articulo.propietario)
+                    articulo.valorado = val
+                    propietario.valoracion = propietario.valoracion + val
+                    propietario.n_valoraciones = propietario.n_valoraciones + 1
+                    articulo.save()
+                    propietario.save()
 
     if Media.objects.filter(asignado=request.user).exists():
         articulos = Media.objects.filter(asignado=request.user)

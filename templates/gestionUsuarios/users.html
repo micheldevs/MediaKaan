@@ -39,7 +39,7 @@
                         </p>
                         <p style="text-align: center;">
                             {% if usuario.n_valoraciones > 0 %}
-                            <span class="glyphicon">★</span> {{usuario.valoracion|div:usuario.n_valoraciones}} / {{usuario.n_valoraciones}} valoraciones recibidas
+                            <span class="glyphicon">★</span> {{usuario.valoracion|intdiv:usuario.n_valoraciones}} / {{usuario.n_valoraciones}} valoraciones recibidas
                             {% else %}
                             <span class="glyphicon">☆</span> {{usuario.valoracion}} / {{usuario.n_valoraciones}} valoraciones recibidas
                             {% endif %}
