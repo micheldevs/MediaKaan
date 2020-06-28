@@ -86,16 +86,17 @@ def register(request):
             usuario.is_active = False # Dejamos desactivada la cuenta para que el usuario la active por medio de un email
             usuario.save()
 
-            # Creación del perfil de información del usuario
-            infous = infous_form.save(commit=False)
-            infous.usuario = usuario
-            infous.avatar = request.FILES['avatar']
-            infous.save()
-
             # Creación de la ubicación del usuario
             ubus = ubus_form.save(commit=False)
             ubus.usuario = usuario
             ubus.save()
+
+            # Creación del perfil de información del usuario
+            infous = infous_form.save(commit=False)
+            infous.usuario = usuario
+            infous.avatar = request.FILES['avatar']
+            infous.ubicacion = ubus
+            infous.save()
 
             # Envío del email para activar la cuenta
             activation_email(request, usuario, usuario_form)
@@ -270,6 +271,8 @@ def my_profile(request):
                 usuarioub.latUb = float(ubus_form['latUb'].value())
                 usuarioub.lngUb = float(ubus_form['lngUb'].value())
                 usuarioub.save()
+                usuarioinfo.ubicacion = usuarioub
+
                 updated = True
 
         if updated:
@@ -375,19 +378,12 @@ def user(request):
 
     if request.method == 'GET':
         username = request.GET.get('username')
-        articulos = None
         usuarioinfo = None
-        usuarioub = None
 
         try:
             if username:
                 usuarioinfo = UsuarioInfo.objects.get(usuario__username=username)
-                usuarioub = UsuarioUbicacion.objects.get(usuario__username=username)
-                if usuarioinfo and usuarioub:
-                    articulos = Media.objects.filter(propietario=usuarioinfo.usuario, asignado=None)
-        except (UsuarioInfo.DoesNotExist, UsuarioUbicacion.DoesNotExist, Media.DoesNotExist):
-            articulos = None
+        except (UsuarioInfo.DoesNotExist):
             usuarioinfo = None
-            usuarioub = None
     
-    return render(request, 'gestionUsuarios/user.html', {'articulos': articulos, 'usuarioinfo': usuarioinfo, 'usuarioub': usuarioub})
+    return render(request, 'gestionUsuarios/user.html', {'usuarioinfo': usuarioinfo, 'usuarioub': usuarioinfo.ubicacion})

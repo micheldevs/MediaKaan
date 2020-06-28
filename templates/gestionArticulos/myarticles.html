@@ -60,11 +60,6 @@
                     <img class="rounded" src="{% get_media_prefix %}{{articulo.fotoart}}"
                         height="335" width="195">
                     <br>
-                    <br>
-                    <a class="btn btn-success" href="#" style="background-color: #45a3a0; border-color: #45a3a0;" role="button">Editar artículo</a>
-                    <small class="form-text text-muted">
-                        <p>Le redirigirá a la página de edición de artículos.</p>
-                    </small>
                 </div>
                 <div class="col-12 col-lg-8 col-md-6">
                     <a href="{% url 'gestionArticulos:art' %}?id={{articulo.media_id}}"><h3 class="mb-0 text-truncated">{{articulo.nombre}}</h3></a>

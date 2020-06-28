@@ -1,4 +1,4 @@
-from django.db import models
+from djongo import models
 from django.contrib.auth.models import User
 from gestionArticulos.enums import AccionType, CategoriaType
 
@@ -44,7 +44,7 @@ class Media(models.Model):
     fotoart=models.ImageField(upload_to='articulos')
     accion=models.CharField(max_length=12, choices=AccionType.choices(), verbose_name='Acción')
     categoria=models.CharField(max_length=12, choices=CategoriaType.choices(), verbose_name='Categoría')
-    tags=models.ManyToManyField(Tag, blank=True)
+    tags=models.ArrayReferenceField(to=Tag)
     asignado=models.ForeignKey(User, on_delete=models.SET_NULL, related_name='user_asignado', blank=True, null=True)
     valorado=models.IntegerField(default=0)
     fechaAd=models.DateTimeField(auto_now_add=True, verbose_name='Fecha de adición')

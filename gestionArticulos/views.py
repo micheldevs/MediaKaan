@@ -150,7 +150,13 @@ def add_article(request):
 
                 media.tags.add(tag)
 
-            media.save()
+            media.save() # Guardamos el artículo en la base de datos
+
+            # Insertamos el artículo del usuario en el vector embebido en su documento, que quedará referenciado por una id
+            usuarioinfo = UsuarioInfo.objects.get(usuario=request.user)
+            usuarioinfo.articulos.add(media)
+            usuarioinfo.save()
+
             registered = True  # Guardamos el artículo en la base de datos e informamos al usuario de que la operación se ha completado con éxito
     else:
         media_form = MediaForm()
@@ -164,6 +170,7 @@ def my_articles(request):
     """
     Devolverá al usuario una plantilla con sus artículos y le dejará borrarlos o asignarlos.
     """
+    usuarioinfo = UsuarioInfo.objects.get(usuario=request.user) # Devolvemos a partir de la información del usuario los artículos del mismo
 
     borrado = None
     asignado = None
@@ -176,18 +183,26 @@ def my_articles(request):
             # Comprobamos que el usuario es dueño del artículo que desea borrar identificado con su id correspondiente.
             if Media.objects.filter(media_id=id, propietario=request.user).exists():
                 articulo = Media.objects.get(media_id=id, propietario=request.user)
+                usuarioinfo.articulos.remove(articulo) # Borramos la referencia del artículo del usuario
+                if articulo.asignado: # Si estaba asignado borramos su referencia de los artículos asignados del usuario
+                    us_asignado = UsuarioInfo.objects.get(usuario=articulo.asignado)
+                    us_asignado.articulos_rec.remove(articulo)
+                    us_asignado.save()
                 borrado = articulo.nombre
-                articulo.delete()
+                articulo.delete() # Borramos finalmente el artículo y guardamos
+                usuarioinfo.save()
         else:
             if request.POST.get('asignar') and request.POST.get('asignado'):
                 id = request.POST.get('asignar')
                 if User.objects.filter(username=request.POST.get('asignado')).exists():
-                    us_asignado = User.objects.get(username=request.POST.get('asignado'))
-                    if us_asignado != request.user and Media.objects.filter(media_id=id, propietario=request.user, asignado=None).exists():  # Evitamos que el usuario se lo asigne a sí mismo y vemos si el artículo no está asignado.
+                    us_asignado = UsuarioInfo.objects.get(usuario__username=request.POST.get('asignado'))
+                    if us_asignado.usuario != request.user and Media.objects.filter(media_id=id, propietario=request.user, asignado=None).exists():  # Evitamos que el usuario se lo asigne a sí mismo y vemos si el artículo no está asignado.
                         articulo = Media.objects.get(media_id=id, propietario=request.user, asignado=None)
-                        articulo.asignado = us_asignado
-                        asignado = us_asignado.username
+                        articulo.asignado = us_asignado.usuario
+                        asignado = us_asignado.usuario.username
                         articulo.save()
+                        us_asignado.articulos_rec.add(articulo)
+                        us_asignado.save()
                     else:
                         erroras = True
                 else:
@@ -195,12 +210,7 @@ def my_articles(request):
             else:
                 erroras = True
 
-    if Media.objects.filter(propietario=request.user).exists():
-        articulos = Media.objects.filter(propietario=request.user)
-    else:
-        articulos = None
-
-    return render(request, 'gestionArticulos/myarticles.html', {'articulos': articulos, 'borrado': borrado, 'asignado': asignado, 'erroras': erroras})
+    return render(request, 'gestionArticulos/myarticles.html', {'articulos': usuarioinfo.articulos.all, 'borrado': borrado, 'asignado': asignado, 'erroras': erroras})
 
 @login_required
 def rec_articles(request):
@@ -224,9 +234,6 @@ def rec_articles(request):
                     articulo.save()
                     propietario.save()
 
-    if Media.objects.filter(asignado=request.user).exists():
-        articulos = Media.objects.filter(asignado=request.user)
-    else:
-        articulos = None
+    usuarioinfo = UsuarioInfo.objects.get(usuario=request.user) # Cogemos la información del usuario para devolverle aquellos artículos donde se le ha asignado
 
-    return render(request, 'gestionArticulos/recarticles.html', {'articulos': articulos})
+    return render(request, 'gestionArticulos/recarticles.html', {'articulos': usuarioinfo.articulos_rec.all})
