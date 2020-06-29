@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-heigth, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{% static "gestionUsuarios/img/logo/mediak-logo.ico" %}">
+    <title>MediaKaanª | Mensajes</title>
+    {% block css %}
+    <link href="{% static "gestionUsuarios/css/bootstrap.css" %}" rel="stylesheet">
+    <link href="{% static "gestionMensajeria/css/messages.css" %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css"
+        rel="stylesheet">
+    {% endblock %}
+</head>
+
+<body>
+    <div class="container">
+        <h3 class="text-center"><img src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" width="30"
+                height="30" alt=""> Mensajes</h3>
+        <br>
+        <div class="row" style="padding-bottom: 5%;">
+            <a href="javascript:history.back()" style="color: gray;">← Volver atrás</a>
+        </div>
+        <div class="messaging">
+            <div class="inbox_msg">
+                <div class="inbox_people">
+                    <div class="headind_srch">
+                        <div class="recent_heading">
+                            <h4>Recientes</h4>
+                        </div>
+                    </div>
+                    <div class="inbox_chat">
+                        <div class="chat_list">
+                            <div class="chat_people">
+                                <div class="chat_ib">
+                                    <h5>Conversación activa</h5>
+                                </div>
+                            </div>
+                        </div>
+                        {% if chat_ac %}
+                        <div class="chat_list active_chat">
+                            <div class="chat_people">
+                                {% if chat_ac.interesado == user %}
+                                <a href="{% url 'gestionUsuarios:usr' %}?username={{chat_ac.articulo.propietario.username}}"
+                                    target="_blank">
+                                    <div class="chat_img"> <img
+                                            src="{% get_media_prefix %}{{chat_ac.articulo.propietario.avatar}}"
+                                            alt="sunil"> </div>
+                                    <div class="chat_ib">
+                                        <h5>{{chat_ac.articulo.propietario.username}}</h5>
+                                        <p>{{chat_ac.articulo.nombre}}</p>
+                                    </div>
+                                </a>
+                                {% else %}
+                                <a href="{% url 'gestionUsuarios:usr' %}?username={{chat_ac.interesado.username}}"
+                                    target="_blank">
+                                    <div class="chat_img"> <img
+                                            src="{% get_media_prefix %}{{chat_ac.interesado.avatar}}" alt="sunil">
+                                    </div>
+                                    <div class="chat_ib">
+                                        <h5>{{chat_ac.interesado.username}}</h5>
+                                        <p>Interesado</p>
+                                    </div>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="chat_list active_chat">
+                            <div class="chat_people">
+                                <div class="chat_ib">
+                                    <h5>No tienes una conversación activa</h5>
+                                    <p>Clique en una de las disponibles o contacte con un propietario.</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="chat_list">
+                            <div class="chat_people">
+                                <div class="chat_ib">
+                                    <h5>Chats con propietarios</h5>
+                                </div>
+                            </div>
+                        </div>
+                        {% for chatpr in chats_pr %}
+                        <a href="{% url 'gestionMensajeria:msg' %}?media_id={{chatpr.articulo.media_id}}&chat_id={{chatpr.chat_id}}">
+                            <div class="chat_list">
+                                <div class="chat_people">
+                                    <div class="chat_img"> <img
+                                            src="{% get_media_prefix %}{{chatpr.articulo.propietario.avatar}}"
+                                            alt="sunil"> </div>
+                                    <div class="chat_ib">
+                                        <h5>{{chatpr.articulo.propietario.username}}</h5>
+                                        <p>{{chatpr.articulo.nombre}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                        <div class="chat_list">
+                            <div class="chat_people">
+                                <div class="chat_ib">
+                                    <h5>Chats con interesados</h5>
+                                </div>
+                            </div>
+                        </div>
+                        {% for chatin in chats_in %}
+                        <a href="{% url 'gestionMensajeria:msg' %}?media_id={{chatin.articulo.media_id}}&chat_id={{chatin.chat_id}}">
+                            <div class="chat_list">
+                                <div class="chat_people">
+                                    <div class="chat_img"> <img src="{% get_media_prefix %}{{chatin.interesado.avatar}}"
+                                            alt="sunil"> </div>
+                                    <div class="chat_ib">
+                                        <h5>{{chatin.interesado.username}}</h5>
+                                        <p>Interesado</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="mesgs">
+                    <div class="msg_history">
+                        {% if not chat_ac %}
+                        <div class="incoming_msg">
+                            <div class="incoming_msg_img"> <img
+                                    src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" alt="sunil"> </div>
+                            <div class="received_msg">
+                                <div class="received_withd_msg">
+                                    <p>No tienes ningún chat activo, seleccione uno de la lista o contacte con un
+                                        propietario.</p>
+                                    <span class="time_date"> Ahora</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        {% for mensaje in chat_ac.msgs.all %}
+                        {% if mensaje.recibe == user %}
+                        <div class="incoming_msg">
+                            <div class="incoming_msg_img">
+                                {% if chat_ac.interesado == user %}
+                                <img src="{% get_media_prefix %}{{chatin.articulo.propietario.avatar}}" alt="sunil">
+                                {% else %}
+                                <img src="{% get_media_prefix %}{{chatin.interesado.avatar}}" alt="sunil">
+                                {% endif %}
+                            </div>
+                            <div class="received_msg">
+                                <div class="received_withd_msg">
+                                    <p>{{mensaje.contenido}}</p>
+                                    <span class="time_date"> {{mensaje.fechaHoraMsg}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="outgoing_msg">
+                            <div class="sent_msg">
+                                <p>{{mensaje.contenido}}</p>
+                                <span class="time_date"> {{mensaje.fechaHoraMsg}}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="type_msg">
+                        <div class="input_msg_write">
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="text" class="write_msg" placeholder="Escriba su mensaje aquí" />
+                                <button class="msg_send_btn" name="enviar" type="submit"><i class="fa fa-envelope"
+                                        aria-hidden="true"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% block javascript %}
+    <script type="text/javascript" src="{% static "gestionUsuarios/js/jquery-3.4.1.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "gestionUsuarios/js/bootstrap.js" %}"></script>
+    {% endblock %}
+</body>
+
+</html>

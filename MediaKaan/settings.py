@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'mathfilters',
     'gestionUsuarios',
-    'gestionArticulos'
+    'gestionArticulos',
+    'gestionMensajeria'
 ]
 
 MIDDLEWARE = [

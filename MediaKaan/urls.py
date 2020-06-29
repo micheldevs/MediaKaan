@@ -26,5 +26,6 @@ urlpatterns = [
     url(r'^about/$', views.about, name='about'),
     url(r'^gestionUsuarios/', include('gestionUsuarios.urls')),
     url(r'^gestionArticulos/', include('gestionArticulos.urls')),
+    url(r'^gestionMensajeria/', include('gestionMensajeria.urls')),
     url(r'^logout/$', views.user_logout, name='logout'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

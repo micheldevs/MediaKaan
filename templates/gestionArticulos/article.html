@@ -63,6 +63,17 @@
                     </a>
                     {% endfor %}
                 </small>
+                <br>
+                {% if articulo.propietario == user or not user.is_authenticated %}
+                <a class="btn btn-success disabled" href="#" 
+                    style="background-color: #45a3a0; border-color: #45a3a0;"
+                    data-toggle="tooltip" data-placement="bottom" title="Es propietario del artículo o necesita iniciar sesión para contactar."
+                     role="button" aria-disabled="true">Contactar con propietario</a>
+                {% else %}
+                <a class="btn btn-success" href="{% url 'gestionMensajeria:msg' %}?media_id={{articulo.media_id}}"
+                    style="background-color: #45a3a0; border-color: #45a3a0;"
+                     role="button">Contactar con propietario</a>
+                {% endif%}
             </div>
             <div class="card-footer">
                 <small>{{articulo.fechaAd}}</small>
