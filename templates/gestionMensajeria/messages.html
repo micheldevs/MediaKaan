@@ -23,11 +23,12 @@
 
 <body>
     <div class="container">
+        <br>
         <h3 class="text-center"><img src="{% static "gestionUsuarios/img/logo/mediak-logo.png" %}" width="30"
                 height="30" alt=""> Mensajes</h3>
         <br>
         <div class="row" style="padding-bottom: 5%;">
-            <a href="javascript:history.back()" style="color: gray;">← Volver atrás</a>
+            <a href="{% url 'index' %}" style="color: gray;">← Volver a inicio</a>
         </div>
         <div class="messaging">
             <div class="inbox_msg">
@@ -52,7 +53,7 @@
                                 <a href="{% url 'gestionUsuarios:usr' %}?username={{chat_ac.articulo.propietario.username}}"
                                     target="_blank">
                                     <div class="chat_img"> <img
-                                            src="{% get_media_prefix %}{{chat_ac.articulo.propietario.avatar}}"
+                                            src="{% get_media_prefix %}{{ava_ac.avatar}}"
                                             alt="sunil"> </div>
                                     <div class="chat_ib">
                                         <h5>{{chat_ac.articulo.propietario.username}}</h5>
@@ -63,11 +64,11 @@
                                 <a href="{% url 'gestionUsuarios:usr' %}?username={{chat_ac.interesado.username}}"
                                     target="_blank">
                                     <div class="chat_img"> <img
-                                            src="{% get_media_prefix %}{{chat_ac.interesado.avatar}}" alt="sunil">
+                                            src="{% get_media_prefix %}{{ava_ac.avatar}}" alt="sunil">
                                     </div>
                                     <div class="chat_ib">
                                         <h5>{{chat_ac.interesado.username}}</h5>
-                                        <p>Interesado</p>
+                                        <p>Interesado por: {{chatin.articulo.nombre}}</p>
                                     </div>
                                 </a>
                                 {% endif %}
@@ -94,9 +95,6 @@
                         <a href="{% url 'gestionMensajeria:msg' %}?media_id={{chatpr.articulo.media_id}}&chat_id={{chatpr.chat_id}}">
                             <div class="chat_list">
                                 <div class="chat_people">
-                                    <div class="chat_img"> <img
-                                            src="{% get_media_prefix %}{{chatpr.articulo.propietario.avatar}}"
-                                            alt="sunil"> </div>
                                     <div class="chat_ib">
                                         <h5>{{chatpr.articulo.propietario.username}}</h5>
                                         <p>{{chatpr.articulo.nombre}}</p>
@@ -116,11 +114,9 @@
                         <a href="{% url 'gestionMensajeria:msg' %}?media_id={{chatin.articulo.media_id}}&chat_id={{chatin.chat_id}}">
                             <div class="chat_list">
                                 <div class="chat_people">
-                                    <div class="chat_img"> <img src="{% get_media_prefix %}{{chatin.interesado.avatar}}"
-                                            alt="sunil"> </div>
                                     <div class="chat_ib">
                                         <h5>{{chatin.interesado.username}}</h5>
-                                        <p>Interesado</p>
+                                        <p>Interesado por: {{chatin.articulo.nombre}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +134,7 @@
                                 <div class="received_withd_msg">
                                     <p>No tienes ningún chat activo, seleccione uno de la lista o contacte con un
                                         propietario.</p>
-                                    <span class="time_date"> Ahora</span>
+                                    <span class="time_date"> {% now "SHORT_DATETIME_FORMAT" %}</span>
                                 </div>
                             </div>
                         </div>
@@ -147,11 +143,7 @@
                         {% if mensaje.recibe == user %}
                         <div class="incoming_msg">
                             <div class="incoming_msg_img">
-                                {% if chat_ac.interesado == user %}
-                                <img src="{% get_media_prefix %}{{chatin.articulo.propietario.avatar}}" alt="sunil">
-                                {% else %}
-                                <img src="{% get_media_prefix %}{{chatin.interesado.avatar}}" alt="sunil">
-                                {% endif %}
+                                <img src="{% get_media_prefix %}{{ava_ac.avatar}}" alt="sunil">
                             </div>
                             <div class="received_msg">
                                 <div class="received_withd_msg">
@@ -175,9 +167,21 @@
                         <div class="input_msg_write">
                             <form method="post">
                                 {% csrf_token %}
-                                <input type="text" class="write_msg" placeholder="Escriba su mensaje aquí" />
+                                {% if not chat_ac %}
+                                <input type="text" class="write_msg" placeholder="Seleccione un chat donde enviar mensajes." disabled="true" />
+                                <button class="msg_send_btn" name="enviar" type="submit" disabled="true"><i class="fa fa-envelope"
+                                        aria-hidden="true"></i></button>
+                                {% else %}
+                                    {% if chat_ac.articulo.asignado %}
+                                <input type="text" class="write_msg" placeholder="El artículo de este chat ya ha sido asignado." disabled="true" />
+                                <button class="msg_send_btn" name="enviar" type="submit" disabled="true"><i class="fa fa-envelope"
+                                        aria-hidden="true"></i></button>
+                                    {% else %}
+                                <input type="text" class="write_msg" name="texto" placeholder="Escriba su mensaje aquí" />
                                 <button class="msg_send_btn" name="enviar" type="submit"><i class="fa fa-envelope"
                                         aria-hidden="true"></i></button>
+                                    {% endif %}
+                                {% endif %}
                             </form>
                         </div>
                     </div>

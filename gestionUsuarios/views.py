@@ -379,11 +379,14 @@ def user(request):
     if request.method == 'GET':
         username = request.GET.get('username')
         usuarioinfo = None
+        usuarioub = None
 
         try:
             if username:
                 usuarioinfo = UsuarioInfo.objects.get(usuario__username=username)
+                usuarioub = usuarioinfo.ubicacion
         except (UsuarioInfo.DoesNotExist):
             usuarioinfo = None
-    
-    return render(request, 'gestionUsuarios/user.html', {'usuarioinfo': usuarioinfo, 'usuarioub': usuarioinfo.ubicacion})
+            usuarioub = None
+
+    return render(request, 'gestionUsuarios/user.html', {'usuarioinfo': usuarioinfo, 'usuarioub': usuarioub})
