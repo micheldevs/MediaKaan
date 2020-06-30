@@ -24,12 +24,10 @@ MEDIA_DIR = os.path.join(BASE_DIR,'media')
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'httvtdt!@ts&p9^oes6atfxi$!fm4vrj0ny3$9li!#i(d_iotn'
-SECRET_KEY = os.environ.get('MEDIAKAAN_SECRET_KEY', 'httvtdt!@ts&p9^oes6atfxi$!fm4vrj0ny3$9li!#i(d_iotn')
+SECRET_KEY = 'httvtdt!@ts&p9^oes6atfxi$!fm4vrj0ny3$9li!#i(d_iotn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = bool(os.environ.get('MEDIAKAAN_DEBUG', True) )
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -52,7 +50,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -152,7 +149,3 @@ EMAIL_HOST_PASSWORD = ''
 # with open('etc/credential_email.txt') as f:
 #    EMAIL_HOST_PASSWORD = f.read().strip()
 EMAIL_PORT = 587
-
-# Simplified static file serving.
-# https://warehouse.python.org/project/whitenoise/
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
