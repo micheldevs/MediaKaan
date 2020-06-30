@@ -24,6 +24,7 @@
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card testimonial-card h-100">
                     <div class="avatar mx-auto white">
+                        <br>
                         <a href="{% url 'gestionUsuarios:usr' %}?username={{usuario.usuario.username}}">
                         <img src="{% get_media_prefix %}{{usuario.avatar}}" height="110" weight="110" class="border rounded-circle"
                             alt="usuario avatar">
@@ -35,8 +36,9 @@
                         </a>
                         <hr>
                         <p>
-                            <i class="fas fa-quote-left"></i> {{usuario.bio}}
+                            {{usuario.bio}}
                         </p>
+                        <p style="text-align: center;">📍 {{usuario.ubicacion.dirUb}}</p>
                         <p style="text-align: center;">
                             {% if usuario.n_valoraciones > 0 %}
                             <span class="glyphicon">★</span> {{usuario.valoracion|intdiv:usuario.n_valoraciones}} / {{usuario.n_valoraciones}} valoraciones recibidas

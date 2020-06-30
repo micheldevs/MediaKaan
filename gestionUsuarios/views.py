@@ -1,17 +1,17 @@
 from django.shortcuts import render
-from gestionUsuarios.forms import UsuarioForm, UsuarioInfoForm, UsuarioUbicacionForm
-from gestionUsuarios.models import User, UsuarioInfo, UsuarioUbicacion
-from gestionArticulos.models import Media
-from gestionArticulos.enums import CategoriaType
+from geopy.geocoders import Nominatim
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from gestionUsuarios.emails import activation_email, recovery_email, suggestion_email
-from gestionUsuarios.tokens import account_token
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
-
+from gestionUsuarios.forms import UsuarioForm, UsuarioInfoForm, UsuarioUbicacionForm
+from gestionUsuarios.models import User, UsuarioInfo, UsuarioUbicacion
+from gestionUsuarios.emails import activation_email, recovery_email, suggestion_email
+from gestionUsuarios.tokens import account_token
+from gestionArticulos.models import Media
+from gestionArticulos.enums import CategoriaType
 
 # Create your views here.
 # Las vistas se encargarán de gestionar las peticiones y las respuestas de las páginas web de la aplicación. (renderizará plantillas)
@@ -89,6 +89,10 @@ def register(request):
             # Creación de la ubicación del usuario
             ubus = ubus_form.save(commit=False)
             ubus.usuario = usuario
+            geolocator = Nominatim(user_agent="MediaKaan")
+            location = geolocator.reverse(str(ubus.latUb) + ", " + str(ubus.lngUb))
+            direccion = ', '.join(location.address.split(',', 4)[1:4])
+            ubus.dirUb = direccion
             ubus.save()
 
             # Creación del perfil de información del usuario
@@ -270,6 +274,10 @@ def my_profile(request):
                 usuarioub = UsuarioUbicacion.objects.get(usuario=request.user)
                 usuarioub.latUb = float(ubus_form['latUb'].value())
                 usuarioub.lngUb = float(ubus_form['lngUb'].value())
+                geolocator = Nominatim(user_agent="MediaKaan")
+                location = geolocator.reverse(ubus_form['latUb'].value() + ", " + ubus_form['lngUb'].value())
+                direccion = ', '.join(location.address.split(',', 4)[1:4])
+                usuarioub.dirUb = direccion
                 usuarioub.save()
                 usuarioinfo.ubicacion = usuarioub
 

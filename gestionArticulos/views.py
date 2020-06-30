@@ -99,7 +99,7 @@ def article(request):
         if id and Media.objects.filter(media_id=id, asignado=None).exists():
             articulo = Media.objects.get(media_id=id, asignado=None)
             usuarioinfo = UsuarioInfo.objects.get(usuario=articulo.propietario)
-            usuarioub = UsuarioUbicacion.objects.get(usuario=articulo.propietario)
+            usuarioub = usuarioinfo.ubicacion
 
     return render(request, 'gestionArticulos/article.html', {'articulo': articulo, 'usuarioinfo': usuarioinfo, 'usuarioub': usuarioub})
 

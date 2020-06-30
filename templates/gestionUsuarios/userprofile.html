@@ -37,6 +37,7 @@
           {{usuarioinfo.bio}}
         </p>
         <p>Fecha de nacimiento: {{usuarioinfo.fechaNacimiento}}</p>
+        <p>📍 {{usuarioinfo.ubicacion.dirUb}}</p>
         <p>Puntuación: {% if usuarioinfo.n_valoraciones > 0 %}{{usuarioinfo.valoracion|intdiv:usuarioinfo.n_valoraciones}} ★ con {{usuarioinfo.n_valoraciones}} valoraciones{% else %}{{usuarioinfo.valoracion}} ☆ con {{usuarioinfo.n_valoraciones}} valoraciones{% endif %}</p>
       </div>
       <div class="col-12 col-lg-4 col-md-6 text-center">

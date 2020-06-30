@@ -20,6 +20,7 @@
                         <p class="font-italic">
                             El usuario se unió el {{usuarioinfo.usuario.date_joined}}
                         </p>
+                        <p>📍 {{usuarioub.dirUb}}</p>
                         <p>
                             {% if usuarioinfo.n_valoraciones > 0 %}
                             <span class="glyphicon">★</span> {{usuarioinfo.valoracion|intdiv:usuarioinfo.n_valoraciones}} / {{usuarioinfo.n_valoraciones}} valoraciones recibidas

@@ -20,9 +20,10 @@ class UsuarioUbicacion(models.Model):
     usuario=models.OneToOneField(User, on_delete=models.CASCADE)
     latUb=models.FloatField(verbose_name='Latitud de la ubicación')
     lngUb=models.FloatField(verbose_name='Longitud de la ubicación')
+    dirUb=models.CharField(max_length=150, null=True)
 
     def __str__(self):
-        return "Usuario: %s con ubicación con latitud %s y longitud %s" % (self.usuario.username, self.latUb, self.lngUb)
+        return "Usuario: %s con ubicación con latitud %s y longitud %s y dirección %s" % (self.usuario.username, self.latUb, self.lngUb, self.dirUb)
 
 class UsuarioInfo(models.Model):
     """
