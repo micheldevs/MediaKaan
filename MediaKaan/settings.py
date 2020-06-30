@@ -24,10 +24,12 @@ MEDIA_DIR = os.path.join(BASE_DIR,'media')
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'httvtdt!@ts&p9^oes6atfxi$!fm4vrj0ny3$9li!#i(d_iotn'
+# SECRET_KEY = 'httvtdt!@ts&p9^oes6atfxi$!fm4vrj0ny3$9li!#i(d_iotn'
+SECRET_KEY = os.environ.get('MEDIAKAAN_SECRET_KEY', 'httvtdt!@ts&p9^oes6atfxi$!fm4vrj0ny3$9li!#i(d_iotn')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = bool(os.environ.get('MEDIAKAAN_DEBUG', True) )
 
 ALLOWED_HOSTS = []
 
@@ -146,4 +148,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'hads202018@gmail.com'
 EMAIL_HOST_PASSWORD = ''
+# with open('etc/credential_email.txt') as f:
+#    EMAIL_HOST_PASSWORD = f.read().strip()
 EMAIL_PORT = 587
