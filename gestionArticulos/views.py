@@ -128,6 +128,7 @@ def add_article(request):
                 for tagname in tag_list:
                     if len(tagname) > 15:
                         tagserror = True
+                        break
             else:
                 tagserror = True
         else:

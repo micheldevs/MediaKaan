@@ -37,12 +37,12 @@
             </form>
             {% if warning %}
             <div class="alert alert-warning" role="alert">
-               <strong>¡Vaya! </strong> {{error}}
+               <strong>¡Vaya! </strong> <p>Tu cuenta está inactiva. Confirmela desde su correo eléctronico <br> y vuelva a iniciar sesión.</p>
             </div>
             {% endif %}
             {% if error %}
             <div class="alert alert-danger" role="alert">
-               <strong>¡Vaya! </strong> {{error}}
+               <strong>¡Vaya! </strong> <p>El nombre de usuario o la contraseña son incorrectos <br> o su cuenta necesita activación.</p>
             </div>
             {% endif %}
          </div>

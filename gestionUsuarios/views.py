@@ -211,10 +211,10 @@ def user_login(request):
                 login(request, user)
                 return HttpResponseRedirect(reverse('index'))
             else:
-                warning = "Tu cuenta está inactiva. Confirmela desde su correo eléctronico y vuelva a iniciar sesión."
+                warning = True
                 return render(request, 'gestionUsuarios/signin.html', {'warning': warning})
         else:
-            error = "El nombre de usuario o la contraseña son incorrectas o su cuenta necesita activación."
+            error = True
             return render(request, 'gestionUsuarios/signin.html', {'error': error})
     else:
         return render(request, 'gestionUsuarios/signin.html', {})
