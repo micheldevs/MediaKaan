@@ -44,16 +44,16 @@ def articles_results(request):
 
             if categoria != "Todas":  # Filtramos por categoría.
                 if ',' in consulta:  # Si se encuentran comas en la consulta, la búsqueda será por tags.
-                    articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, tags__name__in=taglist, asignado=None)
+                    articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, tags__name__in=taglist, asignado=None).distinct()
                 else:
-                    articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, nombre__icontains=consulta, asignado=None)
+                    articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, nombre__icontains=consulta, asignado=None).distinct()
             else:
                 if ',' in consulta:
-                    articulos = Media.objects.filter(tags__name__in=taglist, asignado=None)
+                    articulos = Media.objects.filter(tags__name__in=taglist, asignado=None).distinct()
                 else:
-                    articulos = Media.objects.filter(nombre__icontains=consulta, asignado=None)
+                    articulos = Media.objects.filter(nombre__icontains=consulta, asignado=None).distinct()
         elif categoria and categoria != "Todas" and categoria != "Usuarios":
-            articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, asignado=None)
+            articulos = Media.objects.filter(categoria__exact=CategoriaType(categoria).name, asignado=None).distinct()
 
         if articulos:
             # Gestionamos las páginas y los resultados a mostrar en esta

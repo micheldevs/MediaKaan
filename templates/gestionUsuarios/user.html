@@ -77,6 +77,11 @@
             {% else %}
             <span class="badge badge-pill badge-primary">{{articulo.accion}}</span>
             {% endif %}
+            {% if articulo.asignado %}
+            <p class="font-italic">
+                Este artículo ya ha sido asignado a otro usuario.
+            </p>
+            {% endif %}
             <small>
                 {% for tag in articulo.tags.all %}
                 <a href="{% url 'gestionArticulos:artresults' %}?consulta={{tag.name}},&categoria=Todas">
